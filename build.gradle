@@ -13,9 +13,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 def mcVersion = "1.11.2"
-def buildNumber = "18"
+def buildNumber = "19"
 
-def modVersion = mcVersion + "." + buildNumber
+def modVersion = mcVersion + "-" + buildNumber
 group = "vorquel.mod.similsaxtranstructors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SimilsaxTranstructors"
 version = modVersion
