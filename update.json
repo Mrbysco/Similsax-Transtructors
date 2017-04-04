@@ -1,0 +1,11 @@
+{
+  "homepage": "https://minecraft.curseforge.com/projects/similsax-transtructors",
+  "promos": {
+    "1.11.2-latest": "19",
+    "1.11.2-recommended": "20"
+  },
+  "1.11.2":{
+	"19":"Ported to 1.11.2"
+	,"20":"Fixed item name translation for Wrapped Transtructor.  Added Wrapped version to creative tab along with the other ones.  "
+  }
+}
