@@ -1,4 +1,5 @@
 package vorquel.mod.similsaxtranstructors;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class ItemDummy extends Item {
   public ItemDummy(String name) {
+    setCreativeTab(CreativeTabs.TOOLS);
     setUnlocalizedName(name);
     setMaxStackSize(1);
     setMaxDamage(Short.MAX_VALUE);
