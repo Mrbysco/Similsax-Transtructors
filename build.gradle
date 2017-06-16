@@ -10,13 +10,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-def mcVersion = "1.11.2"
-def buildNumber = "20"
-
-def modVersion = mcVersion + "-" + buildNumber
 group = "vorquel.mod.similsaxtranstructors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SimilsaxTranstructors"
-version = modVersion
+version = "${mc_version}-${mod_version}"
 
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -25,9 +21,8 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.0.2330"
-    runDir = "run"
-    replace("@MOD_VERSION@", modVersion)
+    version = "${mc_version}-${forge_version}"
+    runDir = "run" 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.

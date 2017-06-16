@@ -3,8 +3,8 @@
   "modid": "SimilsaxTranstructors",
   "name": "Similsax Transtructors",
   "description": "Now you can place blocks *behind* the block you click on!",
-  "version": "${modVersion}",
-  "mcversion": "${mcVersion}",
+  "version": "1.12-1.0.21",
+  "mcversion": "1.12",
   "url": "",
   "updateUrl": "",
   "authorList": [

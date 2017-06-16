@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static vorquel.mod.similsaxtranstructors.Config.showOverlay;
 
-@Mod(modid = SimilsaxTranstructors.MOD_ID, name = "Similsax Transtructors", version = "@MOD_VERSION@", updateJSON = "https://raw.githubusercontent.com/PrinceOfAmber/Similsax-Transtructors/master/update.json")
+@Mod(modid = SimilsaxTranstructors.MOD_ID, name = "Similsax Transtructors", updateJSON = "https://raw.githubusercontent.com/PrinceOfAmber/Similsax-Transtructors/master/update.json")
 public class SimilsaxTranstructors {
   public static final String MOD_ID = "similsaxtranstructors";
   //  public static final ItemDummy itemDummy = new ItemDummy("similsaxTranstructor");
