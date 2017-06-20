@@ -1,14 +1,6 @@
 package vorquel.mod.similsaxtranstructors;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -22,7 +14,6 @@ import static vorquel.mod.similsaxtranstructors.Config.showOverlay;
 @Mod(modid = SimilsaxTranstructors.MOD_ID, name = "Similsax Transtructors", updateJSON = "https://raw.githubusercontent.com/PrinceOfAmber/Similsax-Transtructors/master/update.json")
 public class SimilsaxTranstructors {
   public static final String MOD_ID = "similsaxtranstructors";
-  //  public static final ItemDummy itemDummy = new ItemDummy("similsaxTranstructor");
   public static final ItemSimilsaxTranstructor itemBasic = new ItemSimilsaxTranstructor("Basic");
   public static final ItemSimilsaxTranstructor itemAdvanced = new ItemSimilsaxTranstructor("Advanced");
   @SidedProxy(clientSide = "vorquel.mod.similsaxtranstructors.ClientProxy", serverSide = "vorquel.mod.similsaxtranstructors.Proxy")
