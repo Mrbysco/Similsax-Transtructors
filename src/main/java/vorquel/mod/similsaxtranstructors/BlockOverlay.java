@@ -86,14 +86,14 @@ public class BlockOverlay {
     int index;
     if (isBadBlock(event))
       index = 6;
-    else
-      index = ItemSimilsaxTranstructor.getSide(m.sideHit.getIndex(), h.xCoord - mPos.getX(), h.yCoord - mPos.getY(), h.zCoord - mPos.getZ());
+    else{
+      index = ItemSimilsaxTranstructor.getSide(m.sideHit.getIndex(), h.x - mPos.getX(), h.y - mPos.getY(), h.z - mPos.getZ());}
     Minecraft.getMinecraft().renderEngine.bindTexture(overlayLocation);
     Vec3d v = getViewerPosition(event.getPartialTicks());
     GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
     GL11.glPushMatrix();
     GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
-    GL11.glTranslated(-v.xCoord, -v.yCoord, -v.zCoord);
+    GL11.glTranslated(-v.x, -v.y, -v.z);
     GL11.glEnable(GL11.GL_ALPHA_TEST);
     GL11.glAlphaFunc(GL11.GL_GREATER, 0);
     GL11.glEnable(GL11.GL_BLEND);
@@ -150,6 +150,6 @@ public class BlockOverlay {
     Tessellator.getInstance().draw();
   }
   private void addVertex(double u, double v, int i) {
-    Tessellator.getInstance().getBuffer().pos(vs[i].xCoord, vs[i].yCoord, vs[i].zCoord).tex(u, v).endVertex();
+    Tessellator.getInstance().getBuffer().pos(vs[i].x, vs[i].y, vs[i].z).tex(u, v).endVertex();
   }
 }
