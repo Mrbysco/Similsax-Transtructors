@@ -23,9 +23,16 @@ public class SimilsaxTranstructors {
   public void preInit(FMLPreInitializationEvent event) {
     Config.init(event.getSuggestedConfigurationFile());
     ConfigSynchonizer.init();
-    GameRegistry.register(itemBasic, new ResourceLocation(MOD_ID, "similsaxTranstructorBasic"));
-    GameRegistry.register(itemAdvanced, new ResourceLocation(MOD_ID, "similsaxTranstructorAdvanced"));
+    
+    
+//    
+//    RegistryThing.register(itemBasic.setRegistryName(new ResourceLocation(MOD_ID, "similsaxTranstructorBasic")));
+//  
+//    RegistryThing.register(  itemAdvanced.setRegistryName(new ResourceLocation(MOD_ID, "similsaxTranstructorAdvanced")));
     proxy.registerItemModel();
+    
+
+    MinecraftForge.EVENT_BUS.register(RegistryThing.class);
   }
   @Mod.EventHandler
   public void init(FMLInitializationEvent event) {
