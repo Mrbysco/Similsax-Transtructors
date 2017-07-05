@@ -12,9 +12,9 @@ public class ClientProxy extends Proxy {
   }
   @Override
   public void registerItemModel() {
-    ModelLoader.setCustomModelResourceLocation(itemDummy, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructor", "inventory"));
-    ModelLoader.setCustomModelResourceLocation(itemBasic, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructorbasic", "inventory"));
-    ModelLoader.setCustomModelResourceLocation(itemAdvanced, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructoradvanced", "inventory"));
+//    ModelLoader.setCustomModelResourceLocation(itemDummy, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructor", "inventory"));
+//    ModelLoader.setCustomModelResourceLocation(itemBasic, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructorbasic", "inventory"));
+//    ModelLoader.setCustomModelResourceLocation(itemAdvanced, 0, new ModelResourceLocation(MOD_ID + ":similsaxtranstructoradvanced", "inventory"));
   }
   @Override
   public void addScheduledTask(Runnable runnable) {
