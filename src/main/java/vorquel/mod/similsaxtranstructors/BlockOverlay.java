@@ -82,6 +82,7 @@ public class BlockOverlay {
       return;
     RayTraceResult m = event.getTarget();
     BlockPos mPos = m.getBlockPos();
+
     Vec3d h = m.hitVec;
     int index;
     if (isBadBlock(event))

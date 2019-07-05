@@ -20,6 +20,7 @@ import static net.minecraft.util.EnumActionResult.SUCCESS;
 public class ItemSimilsaxTranstructor extends Item {
   public int range = 0;
   public ItemSimilsaxTranstructor(String name) {
+    super();
     setCreativeTab(CreativeTabs.TOOLS);
     setUnlocalizedName("similsaxtranstructor" + name);
     setMaxStackSize(1);
