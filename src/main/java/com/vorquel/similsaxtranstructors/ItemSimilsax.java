@@ -10,6 +10,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ItemSimilsax extends Item {
@@ -29,7 +30,10 @@ public class ItemSimilsax extends Item {
       return ActionResultType.PASS;
     }
     range = 32;
-    return this.tower(context.getItem(), context.getPlayer(), block.getBlock(), block, context.getWorld(), context.getPos(), context.getFace(), blockStack);
+    int side=getSide(context.getFace().ordinal(), context.getHitVec());
+
+    return this.tower(context.getItem(), context.getPlayer(), block.getBlock(), block, context.getWorld(), context.getPos(),
+        Direction.values()[side], blockStack);
   }
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack) {
@@ -38,7 +42,7 @@ public class ItemSimilsax extends Item {
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack, int range) {
     if (range == 0) return ActionResultType.PASS;
-    pos = pos.offset(side); 
+    pos = pos.offset(side);
     BlockState otherState = world.getBlockState(pos);
     Block otherBlock = otherState.getBlock();
     if (block == otherBlock && state.getProperties().equals(otherState.getProperties())) {
@@ -76,7 +80,8 @@ public class ItemSimilsax extends Item {
   private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
   private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
 
-  public static int getSide(int side, double xIn, double yIn, double zIn) {
+  public static int getSide(int side, Vec3d vec) {
+    double xIn = vec.x, yIn = vec.y, zIn = vec.z;
     //if the middle was clicked, place on the opposite side
     float lo = .25f, hi = .75f;
     int centeredSides = 0;
