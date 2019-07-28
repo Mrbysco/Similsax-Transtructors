@@ -1,24 +1,22 @@
 package vorquel.mod.similsaxtranstructors;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 public class BlockOverlay {
-  private final ResourceLocation overlayLocation = new ResourceLocation(SimilsaxTranstructors.MOD_ID.toLowerCase(), "textures/overlay.png");
+  private final ResourceLocation overlayLocation = new ResourceLocation(SimilsaxTranstructors.MODID.toLowerCase(), "textures/overlay.png");
   private final Vec3d[] vs = new Vec3d[8];
   {
     for (int i = 0; i < 8; ++i) {
@@ -76,69 +74,69 @@ public class BlockOverlay {
     lookUps[5] = new int[] { 4, 3, 0, 5, 0, 3 };
     lookUps[6] = new int[] { 6, 6, 6, 6, 6, 6 };
   }
-  @SubscribeEvent
-  public void renderOverlay(DrawBlockHighlightEvent event) {
-    if (shouldSkip(event))
-      return;
-    RayTraceResult m = event.getTarget();
-    BlockPos mPos = m.getBlockPos();
-
-    Vec3d h = m.hitVec;
-    int index;
-    if (isBadBlock(event))
-      index = 6;
-    else{
-      index = ItemSimilsaxTranstructor.getSide(m.sideHit.getIndex(), h.x - mPos.getX(), h.y - mPos.getY(), h.z - mPos.getZ());}
-    Minecraft.getMinecraft().renderEngine.bindTexture(overlayLocation);
-    Vec3d v = getViewerPosition(event.getPartialTicks());
-    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-    GL11.glPushMatrix();
-    GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
-    GL11.glTranslated(-v.x, -v.y, -v.z);
-    GL11.glEnable(GL11.GL_ALPHA_TEST);
-    GL11.glAlphaFunc(GL11.GL_GREATER, 0);
-    GL11.glEnable(GL11.GL_BLEND);
-    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    GL11.glColor4f(1, 1, 1, .375f);
-    final float P = 1 / 256f, N = -1 / 256f;
-    final int X = 1, Y = 2, Z = 4;
-    GL11.glTranslatef(P, 0, 0);
-    drawSide(X, Y, Z, uvs[lookUps[index][0]]);
-    GL11.glTranslatef(N, P, 0);
-    drawSide(Y, Z, X, uvs[lookUps[index][1]]);
-    GL11.glTranslatef(0, N, P);
-    drawSide(Z, X, Y, uvs[lookUps[index][2]]);
-    GL11.glTranslatef(N, 0, N);
-    drawSide(0, Z, Y, uvs[lookUps[index][3]]);
-    GL11.glTranslatef(P, N, 0);
-    drawSide(0, X, Z, uvs[lookUps[index][4]]);
-    GL11.glTranslatef(0, P, N);
-    drawSide(0, Y, X, uvs[lookUps[index][5]]);
-    GL11.glPopMatrix();
-    GL11.glPopAttrib();
-  }
-  private boolean shouldSkip(DrawBlockHighlightEvent event) {
-    if (event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return true;
-    ItemStack mainItemStack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
-    Item mainItem = (mainItemStack.isEmpty()) ? null : mainItemStack.getItem();
-    ItemStack offItemStack = event.getPlayer().getHeldItem(EnumHand.OFF_HAND);
-    Item offItem = (offItemStack.isEmpty()) ? null : offItemStack.getItem();
-    return !(mainItem instanceof ItemSimilsaxTranstructor || offItem instanceof ItemSimilsaxTranstructor);
-  }
-  private boolean isBadBlock(DrawBlockHighlightEvent event) {
-    BlockPos pos = event.getTarget().getBlockPos();
-    World world = event.getPlayer().world;
-    IBlockState state = world.getBlockState(pos);
-    Block block = state.getBlock();
-    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
-  }
-  private Vec3d getViewerPosition(float partialTicks) {
-    Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
-    double x = partial(partialTicks, viewer.prevPosX, viewer.posX);
-    double y = partial(partialTicks, viewer.prevPosY, viewer.posY);
-    double z = partial(partialTicks, viewer.prevPosZ, viewer.posZ);
-    return new Vec3d(x, y, z);
-  }
+//  @SubscribeEvent
+//  public void renderOverlay(DrawBlockHighlightEvent event) {
+//    if (shouldSkip(event))
+//      return;
+//    RayTraceResult m = event.getTarget();
+//    BlockPos mPos = m.getBlockPos();
+//
+//    Vec3d h = m.hitVec;
+//    int index;
+//    if (isBadBlock(event))
+//      index = 6;
+//    else{
+//      index = ItemSimilsaxTranstructor.getSide(m.sideHit.getIndex(), h.x - mPos.getX(), h.y - mPos.getY(), h.z - mPos.getZ());}
+//    Minecraft.getMinecraft().renderEngine.bindTexture(overlayLocation);
+//    Vec3d v = getViewerPosition(event.getPartialTicks());
+//    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+//    GL11.glPushMatrix();
+//    GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
+//    GL11.glTranslated(-v.x, -v.y, -v.z);
+//    GL11.glEnable(GL11.GL_ALPHA_TEST);
+//    GL11.glAlphaFunc(GL11.GL_GREATER, 0);
+//    GL11.glEnable(GL11.GL_BLEND);
+//    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//    GL11.glColor4f(1, 1, 1, .375f);
+//    final float P = 1 / 256f, N = -1 / 256f;
+//    final int X = 1, Y = 2, Z = 4;
+//    GL11.glTranslatef(P, 0, 0);
+//    drawSide(X, Y, Z, uvs[lookUps[index][0]]);
+//    GL11.glTranslatef(N, P, 0);
+//    drawSide(Y, Z, X, uvs[lookUps[index][1]]);
+//    GL11.glTranslatef(0, N, P);
+//    drawSide(Z, X, Y, uvs[lookUps[index][2]]);
+//    GL11.glTranslatef(N, 0, N);
+//    drawSide(0, Z, Y, uvs[lookUps[index][3]]);
+//    GL11.glTranslatef(P, N, 0);
+//    drawSide(0, X, Z, uvs[lookUps[index][4]]);
+//    GL11.glTranslatef(0, P, N);
+//    drawSide(0, Y, X, uvs[lookUps[index][5]]);
+//    GL11.glPopMatrix();
+//    GL11.glPopAttrib();
+//  }
+//  private boolean shouldSkip(DrawBlockHighlightEvent event) {
+//    if (event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return true;
+//    ItemStack mainItemStack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
+//    Item mainItem = (mainItemStack.isEmpty()) ? null : mainItemStack.getItem();
+//    ItemStack offItemStack = event.getPlayer().getHeldItem(EnumHand.OFF_HAND);
+//    Item offItem = (offItemStack.isEmpty()) ? null : offItemStack.getItem();
+//    return !(mainItem instanceof ItemSimilsaxTranstructor || offItem instanceof ItemSimilsaxTranstructor);
+//  }
+//  private boolean isBadBlock(DrawBlockHighlightEvent event) {
+//    BlockPos pos = event.getTarget().getBlockPos();
+//    World world = event.getPlayer().world;
+//    IBlockState state = world.getBlockState(pos);
+//    Block block = state.getBlock();
+//    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
+//  }
+//  private Vec3d getViewerPosition(float partialTicks) {
+//    Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+//    double x = partial(partialTicks, viewer.prevPosX, viewer.posX);
+//    double y = partial(partialTicks, viewer.prevPosY, viewer.posY);
+//    double z = partial(partialTicks, viewer.prevPosZ, viewer.posZ);
+//    return new Vec3d(x, y, z);
+//  }
   private double partial(float partialTicks, double prevPos, double pos) {
     return partialTicks == 1 ? pos : prevPos + partialTicks * (pos - prevPos);
   }

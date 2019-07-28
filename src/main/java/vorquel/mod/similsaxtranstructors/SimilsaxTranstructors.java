@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 @Mod(SimilsaxTranstructors.MODID)
 public class SimilsaxTranstructors {
   public static final String MODID = "similsaxtranstructors";
-  public static final ItemSimilsaxTranstructor itemBasic = new ItemSimilsaxTranstructor("Basic");
-  public static final ItemSimilsaxTranstructor itemAdvanced = new ItemSimilsaxTranstructor("Advanced");
+//  public static final ItemSimilsaxTranstructor itemBasic = new ItemSimilsaxTranstructor("Basic");
+//  public static final ItemSimilsaxTranstructor itemAdvanced = new ItemSimilsaxTranstructor("Advanced");
   static Logger log = LogManager.getLogger(MODID);
 
 
