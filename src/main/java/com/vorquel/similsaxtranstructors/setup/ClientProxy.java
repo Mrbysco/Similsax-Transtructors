@@ -1,9 +1,9 @@
-package vorquel.mod.similsaxtranstructors.setup;
+package com.vorquel.similsaxtranstructors.setup;
 
+import com.vorquel.similsaxtranstructors.BlockOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import vorquel.mod.similsaxtranstructors.BlockOverlay;
 
 public class ClientProxy implements IProxy {
 	@Override

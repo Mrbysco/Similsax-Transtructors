@@ -1,4 +1,4 @@
-package vorquel.mod.similsaxtranstructors.setup;
+package com.vorquel.similsaxtranstructors.setup;
 
 import net.minecraft.world.World;
 

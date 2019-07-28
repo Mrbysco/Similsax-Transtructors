@@ -1,4 +1,4 @@
-package vorquel.mod.similsaxtranstructors;
+package com.vorquel.similsaxtranstructors;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
