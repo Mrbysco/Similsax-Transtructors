@@ -98,19 +98,19 @@ public class BlockOverlay {
         index = indexd.ordinal();
         switch(indexd){
           case DOWN:
-            look= new int[] { 2, 5, 1, 1, 4, 2 };
+            look= new int[] { 2, 5, arrow2, arrow2, 4, 2 };
             break;
           case UP:
             look=new int[] { arrow1, 4, 3, 3, 5, arrow1 };
             break;
           case NORTH:
-            look=new int[] { 1, 2, 5, 2, 1, 4 }; 
+            look=new int[] { arrow2, 2, 5, 2, arrow2, 4 }; 
             break;
           case SOUTH:
             look= new int[] { 3, arrow1, 4, arrow1, 3, 5 };
             break;
           case WEST:
-            look=new int[] { 5, 1, 2, 4, 2, 1 };
+            look=new int[] { 5, arrow2, 2, 4, 2, arrow2 };
             break;
           case EAST://5
             look= new int[] { 4, 3, arrow1, 5, arrow1, 3 }; 
