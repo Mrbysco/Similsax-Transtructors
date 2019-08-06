@@ -40,12 +40,14 @@ public class ItemSimilsax extends Item {
   }
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack, int range) {
-    if (range == 0){ return ActionResultType.PASS;}
+    if (range == 0) {
+      return ActionResultType.PASS;
+    }
     pos = pos.offset(side);
     BlockState otherState = world.getBlockState(pos);
     Block otherBlock = otherState.getBlock();
     if (block == otherBlock // && state.getProperties().equals(otherState.getProperties())
-        ) {
+    ) {
       SimilsaxTranstructors.log.info("go to range minus one {}", range);
       return tower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
@@ -89,7 +91,7 @@ public class ItemSimilsax extends Item {
     double xIn = vec.x - pos.getX(),
         yIn = vec.y - pos.getY(),
         zIn = vec.z - pos.getZ();
-//    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
+    //    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
     //if the middle was clicked, place on the opposite side
     int centeredSides = 0;
     if (side != 0 && side != 1)
@@ -105,19 +107,19 @@ public class ItemSimilsax extends Item {
     int[] sides;
     switch (sideIn) {
       case DOWN:
-      case UP: 
+      case UP:
         left = zIn;
         right = xIn;
         sides = sidesZX;
       break;
       case NORTH:
-      case SOUTH: 
+      case SOUTH:
         left = xIn;
         right = yIn;
         sides = sidesXY;
       break;
       case WEST:
-      case EAST: 
+      case EAST:
         left = yIn;
         right = zIn;
         sides = sidesYZ;
@@ -129,14 +131,13 @@ public class ItemSimilsax extends Item {
     boolean b1 = left > 1 - right;
     int result = 0;
     if (b0 && b1)
-      result= sides[0];
+      result = sides[0];
     else if (!b0 && !b1)
-      result= sides[1];
+      result = sides[1];
     else if (b1)
-      result= sides[2];
+      result = sides[2];
     else
-      result= sides[3];
-    
+      result = sides[3];
     return Direction.values()[result].getOpposite();
   }
 }

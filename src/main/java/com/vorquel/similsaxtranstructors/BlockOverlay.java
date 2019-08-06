@@ -30,13 +30,13 @@ public class BlockOverlay {
       vs[i] = new Vec3d(x, y, z);
     }
   }
-  int arrow1=0;
-  int arrow2=1;
-  int arrow3=2;
-  int arrow4=3;
-  int cross=4;
-  int bullseye=5;
-  int cancel=6;
+  int arrow1 = 0;
+  int arrow2 = 1;
+  int arrow3 = 2;
+  int arrow4 = 3;
+  int cross = 4;
+  int bullseye = 5;
+  int cancel = 6;
   private final float[][][] uvs = new float[7][4][];
   {
     //ararrow1ow 1
@@ -78,8 +78,9 @@ public class BlockOverlay {
 
   @SubscribeEvent
   public void renderOverlay(DrawBlockHighlightEvent event) {
-    if (shouldSkip(event))
+    if (shouldSkip(event)) {
       return;
+    }
     RayTraceResult m = event.getTarget();
     if (m.getType() == RayTraceResult.Type.BLOCK) {
       BlockRayTraceResult result = ((BlockRayTraceResult) m);
@@ -91,66 +92,72 @@ public class BlockOverlay {
       if (isBadBlock(event)) {
         indexd = Direction.UP;
         index = 6;
-        look=new int[] { cancel,cancel,cancel,cancel,cancel,cancel}; 
+        look = new int[] { cancel, cancel, cancel, cancel, cancel, cancel };
       }
       else {
         indexd = ItemSimilsax.getSide(result.getFace(), h, mPos);
         index = indexd.ordinal();
-        switch(indexd){
+        switch (indexd) {
           case DOWN:
-            look= new int[] { arrow3, 5, arrow2, arrow2, 4, arrow3 };
-            break;
+            look = new int[] { arrow3, bullseye, arrow2, arrow2, cross, arrow3 };
+          break;
           case UP:
-            look=new int[] { arrow1, 4, arrow4, arrow4, 5, arrow1 };
-            break;
+            look = new int[] { arrow1, cross, arrow4, arrow4, bullseye, arrow1 };
+          break;
           case NORTH:
-            look=new int[] { arrow2, arrow3, 5, arrow3, arrow2, 4 }; 
-            break;
+            look = new int[] { arrow2, arrow3, bullseye, arrow3, arrow2, cross };
+          break;
           case SOUTH:
-            look= new int[] { arrow4, arrow1, 4, arrow1, arrow4, 5 };
-            break;
+            look = new int[] { arrow4, arrow1, cross, arrow1, arrow4, bullseye };
+          break;
           case WEST:
-            look=new int[] { 5, arrow2, arrow3, 4, arrow3, arrow2 };
-            break;
+            look = new int[] { bullseye, arrow2, arrow3, cross, arrow3, arrow2 };
+          break;
           case EAST://5
-            look= new int[] { 4, arrow4, arrow1, 5, arrow1, arrow4 }; 
-            break;
+            look = new int[] { cross, arrow4, arrow1, bullseye, arrow1, arrow4 };
+          break;
           default:
-            break;
-          
+          break;
         }
       }
-     
       //      Minecraft.getInstance().eng
       //was renderEngine
       Minecraft.getInstance().textureManager.bindTexture(overlayLocation);
       Vec3d v = getViewerPosition(event.getPartialTicks());
       GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
       GL11.glPushMatrix();
+      SimilsaxTranstructors.log.info("{} ::  mPos", mPos); 
       GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
-      GL11.glTranslated(-v.x, -v.y, -v.z); 
+      GL11.glTranslated(-v.x, -v.y, -v.z);
       GL11.glEnable(GL11.GL_ALPHA_TEST);
       GL11.glAlphaFunc(GL11.GL_GREATER, 0);
       GL11.glEnable(GL11.GL_BLEND);
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
       GL11.glColor4f(1, 1, 1, .375f);
+      //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract      
       final float P = 1 / 256f, N = -1 / 256f;
       final int X = 1, Y = 2, Z = 4;
-//      if(index>=2 && index <= 5)
-//      GL11.glTranslatef(0, -1.8F, 0);//2345
-//      if(index==0)
-      SimilsaxTranstructors.log.info("{} ::  hm", index); 
-      int TOP = 1, EAST=0, SOUTH=2,WEST=3, BOTTOM = 4,NORTH=5 ;
+      //      if(index>=2 && index <= 5)
+      //      GL11.glTranslatef(0, -1.8F, 0);//2345
+      //      if(index==0)
+      SimilsaxTranstructors.log.info("{} ::  hm", index);
+      int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
+      //draw east
       GL11.glTranslatef(P, 0, 0);
       drawSide(X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
+      //draw top
       GL11.glTranslatef(N, P, 0);
-      drawSide(Y, Z, X, uvs[look[TOP]]);   // TOP
+      drawSide(Y, Z, X, uvs[look[TOP]]); // TOP
+      //SOUTH
       GL11.glTranslatef(0, N, P);
       drawSide(Z, X, Y, uvs[look[SOUTH]]);
+      //WEST
       GL11.glTranslatef(N, 0, N);
       drawSide(0, Z, Y, uvs[look[WEST]]);
+      //BOTTOM
       GL11.glTranslatef(P, N, 0);
       drawSide(0, X, Z, uvs[look[BOTTOM]]);
+      //NORTH
       GL11.glTranslatef(0, P, N);
       drawSide(0, Y, X, uvs[look[NORTH]]);
       GL11.glPopMatrix();
