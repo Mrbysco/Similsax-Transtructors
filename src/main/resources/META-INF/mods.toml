@@ -29,7 +29,7 @@ credits="Thanks for this example mod goes to Java" #optional
 authors="Lothrazar, Vorquel" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-A small mod
+Simple classic building tools for long range structures
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional
