@@ -89,12 +89,15 @@ public class BlockOverlay {
       BlockPos mPos = new BlockPos(m.getHitVec()); //m.getBlockPos();
       Vec3d h = m.getHitVec();
       Direction indexd;
-      if (isBadBlock(event))
+      int index = 6;
+      if (isBadBlock(event)) {
         indexd = Direction.UP;
+        index = 6;
+      }
       else {
         indexd = ItemSimilsax.getSide(result.getFace(), h, mPos);
+        index = indexd.ordinal();
       }
-      int index = indexd.ordinal();
       //      Minecraft.getInstance().eng
       //was renderEngine
       Minecraft.getInstance().textureManager.bindTexture(overlayLocation);
@@ -102,28 +105,31 @@ public class BlockOverlay {
       GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
       GL11.glPushMatrix();
       GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
-      GL11.glTranslated(-v.x, -v.y, -v.z);
+      GL11.glTranslated(-v.x, -v.y, -v.z); 
       GL11.glEnable(GL11.GL_ALPHA_TEST);
       GL11.glAlphaFunc(GL11.GL_GREATER, 0);
       GL11.glEnable(GL11.GL_BLEND);
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
       GL11.glColor4f(1, 1, 1, .375f);
       final float P = 1 / 256f, N = -1 / 256f;
-      final int X = 1, Y = 2, Z = 4; 
-   
-      SimilsaxTranstructors.log.info("{} ::  hm", index);
+      final int X = 1, Y = 2, Z = 4;
+//      if(index>=2 && index <= 5)
+//      GL11.glTranslatef(0, -1.8F, 0);//2345
+//      if(index==0)
+      SimilsaxTranstructors.log.info("{} ::  hm", index); 
+      int TOP = 1, EAST=0, SOUTH=2,WEST=3, BOTTOM = 4,NORTH=5 ;
       GL11.glTranslatef(P, 0, 0);
-      drawSide(X, Y, Z, uvs[lookUps[index][0]]);
+      drawSide(X, Y, Z, uvs[lookUps[index][EAST]]);// this one has to be est or west side
       GL11.glTranslatef(N, P, 0);
-      drawSide(Y, Z, X, uvs[lookUps[index][1]]);
+      drawSide(Y, Z, X, uvs[lookUps[index][TOP]]);   // TOP
       GL11.glTranslatef(0, N, P);
-      drawSide(Z, X, Y, uvs[lookUps[index][2]]);
+      drawSide(Z, X, Y, uvs[lookUps[index][SOUTH]]);
       GL11.glTranslatef(N, 0, N);
-      drawSide(0, Z, Y, uvs[lookUps[index][3]]);
+      drawSide(0, Z, Y, uvs[lookUps[index][WEST]]);
       GL11.glTranslatef(P, N, 0);
-      drawSide(0, X, Z, uvs[lookUps[index][4]]);
+      drawSide(0, X, Z, uvs[lookUps[index][BOTTOM]]);
       GL11.glTranslatef(0, P, N);
-      drawSide(0, Y, X, uvs[lookUps[index][5]]);
+      drawSide(0, Y, X, uvs[lookUps[index][NORTH]]);
       GL11.glPopMatrix();
       GL11.glPopAttrib();
     }
