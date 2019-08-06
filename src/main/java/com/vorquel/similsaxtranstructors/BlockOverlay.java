@@ -126,7 +126,7 @@ public class BlockOverlay {
       Vec3d v = getViewerPosition(event.getPartialTicks());
       GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
       GL11.glPushMatrix();
-      SimilsaxTranstructors.log.info("{} ::  mPos", mPos); 
+      SimilsaxTranstructors.log.info("{} ::  mPos {} ", mPos, indexd);
       GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
       GL11.glTranslated(-v.x, -v.y, -v.z);
       GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -137,9 +137,8 @@ public class BlockOverlay {
       //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract      
       final float P = 1 / 256f, N = -1 / 256f;
       final int X = 1, Y = 2, Z = 4;
-      //      if(index>=2 && index <= 5)
-      //      GL11.glTranslatef(0, -1.8F, 0);//2345
-      //      if(index==0)
+      if (index >= 2 && index <= 5)
+        GL11.glTranslatef(0, -1.7F, 0);//2345
       SimilsaxTranstructors.log.info("{} ::  hm", index);
       int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
       //draw east
