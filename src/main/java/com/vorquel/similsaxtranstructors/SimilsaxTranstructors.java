@@ -22,6 +22,7 @@ public class SimilsaxTranstructors {
   public SimilsaxTranstructors() {
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     MinecraftForge.EVENT_BUS.register(this);
+    MinecraftForge.EVENT_BUS.register(new BlockOverlay());
     ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
   }
 
