@@ -1,4 +1,5 @@
 package com.vorquel.similsaxtranstructors;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +20,7 @@ public class ItemSimilsax extends Item {
     super(properties);
   }
 
-  public int range = 0;
+  private final static int range = 32;
 
   @Override
   public ActionResultType onItemUse(ItemUseContext context) {
@@ -29,11 +30,9 @@ public class ItemSimilsax extends Item {
     if (player.inventory.hasItemStack(blockStack) == false) {
       return ActionResultType.PASS;
     }
-    range = 32;
-    int side=getSide(context.getFace().ordinal(), context.getHitVec());
-
+    Direction side = getSide(context.getFace(), context.getHitVec(), context.getPos());
     return this.tower(context.getItem(), context.getPlayer(), block.getBlock(), block, context.getWorld(), context.getPos(),
-        Direction.values()[side], blockStack);
+        side, blockStack);
   }
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack) {
@@ -41,7 +40,7 @@ public class ItemSimilsax extends Item {
   }
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack, int range) {
-    if (range == 0) return ActionResultType.PASS;
+    if (range == 0){ return ActionResultType.PASS;}
     pos = pos.offset(side);
     BlockState otherState = world.getBlockState(pos);
     Block otherBlock = otherState.getBlock();
@@ -79,11 +78,16 @@ public class ItemSimilsax extends Item {
   private static final int[] sidesXY = new int[] { 4, 5, 0, 1 };
   private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
   private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
+  final static float lo = .25f;
+  final static float hi = .75f;
 
-  public static int getSide(int side, Vec3d vec) {
-    double xIn = vec.x, yIn = vec.y, zIn = vec.z;
+  public static Direction getSide(Direction sideIn, Vec3d vec, BlockPos pos) {
+    int side = sideIn.ordinal();
+    double xIn = vec.x - pos.getX(),
+        yIn = vec.y - pos.getY(),
+        zIn = vec.z - pos.getZ();
+    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
     //if the middle was clicked, place on the opposite side
-    float lo = .25f, hi = .75f;
     int centeredSides = 0;
     if (side != 0 && side != 1)
       centeredSides += yIn > lo && yIn < hi ? 1 : 0;
@@ -92,43 +96,47 @@ public class ItemSimilsax extends Item {
     if (side != 4 && side != 5)
       centeredSides += xIn > lo && xIn < hi ? 1 : 0;
     if (centeredSides == 2)
-      return side;
+      return Direction.values()[side].getOpposite();
     //otherwise, place on the nearest side
     double left, right;
     int[] sides;
-    switch (side) {
-      case 0:
-      case 1:
+    switch (sideIn) {
+      case DOWN:
+      case UP:
+        SimilsaxTranstructors.log.info("up down ZX");
         left = zIn;
         right = xIn;
         sides = sidesZX;
-        break;
-      case 2:
-      case 3:
+      break;
+      case NORTH:
+      case SOUTH:
+        SimilsaxTranstructors.log.info("north south ZY");
         left = xIn;
         right = yIn;
         sides = sidesXY;
-        break;
-      case 4:
-      case 5:
+      break;
+      case WEST:
+      case EAST:
+        SimilsaxTranstructors.log.info("west east  YZ");
         left = yIn;
         right = zIn;
         sides = sidesYZ;
-        break;
+      break;
       default:
-        return -1;
+        return Direction.UP;
     }
     boolean b0 = left > right;
     boolean b1 = left > 1 - right;
+    int result = 0;
     if (b0 && b1)
-      return sides[0];
+      result= sides[0];
     else if (!b0 && !b1)
-      return sides[1];
+      result= sides[1];
     else if (b1)
-      return sides[2];
+      result= sides[2];
     else
-      return sides[3];
+      result= sides[3];
+    
+    return Direction.values()[result].getOpposite();
   }
 }
-
-
