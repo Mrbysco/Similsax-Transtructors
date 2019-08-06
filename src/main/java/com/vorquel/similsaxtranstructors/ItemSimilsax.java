@@ -44,8 +44,10 @@ public class ItemSimilsax extends Item {
     pos = pos.offset(side);
     BlockState otherState = world.getBlockState(pos);
     Block otherBlock = otherState.getBlock();
-    if (block == otherBlock && state.getProperties().equals(otherState.getProperties())) {
-      return tower(stack, player, block, state, world, pos.offset(side), side, blockStack, range - 1);
+    if (block == otherBlock // && state.getProperties().equals(otherState.getProperties())
+        ) {
+      SimilsaxTranstructors.log.info("go to range minus one {}", range);
+      return tower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
     else if (world.isAirBlock(pos)) {
       //      if (!world.mayPlace(block, pos, false, side.getOpposite(), null)) return ActionResultType.PASS;
@@ -64,6 +66,7 @@ public class ItemSimilsax extends Item {
           }
         }
       }
+      SimilsaxTranstructors.log.info("gbuild at  {}", pos);
       world.setBlockState(pos, state);
       world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
           block.getSoundType(
