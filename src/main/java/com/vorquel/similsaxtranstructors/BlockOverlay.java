@@ -86,18 +86,17 @@ public class BlockOverlay {
     RayTraceResult m = event.getTarget();
     if (m.getType() == RayTraceResult.Type.BLOCK) {
       BlockRayTraceResult result = ((BlockRayTraceResult) m);
-    
       BlockPos mPos = new BlockPos(m.getHitVec()); //m.getBlockPos();
       Vec3d h = m.getHitVec();
       Direction indexd;
       if (isBadBlock(event))
         indexd = Direction.UP;
       else {
-        indexd = ItemSimilsax.getSide(  result.getFace() , h, mPos);
+        indexd = ItemSimilsax.getSide(result.getFace(), h, mPos);
       }
-      int index=indexd.ordinal(); 
-//      Minecraft.getInstance().eng
-     //was renderEngine
+      int index = indexd.ordinal();
+      //      Minecraft.getInstance().eng
+      //was renderEngine
       Minecraft.getInstance().textureManager.bindTexture(overlayLocation);
       Vec3d v = getViewerPosition(event.getPartialTicks());
       GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
@@ -110,7 +109,9 @@ public class BlockOverlay {
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
       GL11.glColor4f(1, 1, 1, .375f);
       final float P = 1 / 256f, N = -1 / 256f;
-      final int X = 1, Y = 2, Z = 4;
+      final int X = 1, Y = 2, Z = 4; 
+   
+      SimilsaxTranstructors.log.info("{} ::  hm", index);
       GL11.glTranslatef(P, 0, 0);
       drawSide(X, Y, Z, uvs[lookUps[index][0]]);
       GL11.glTranslatef(N, P, 0);
@@ -129,9 +130,10 @@ public class BlockOverlay {
   }
 
   private boolean shouldSkip(DrawBlockHighlightEvent event) {
-    if (event.getTarget().getType() != RayTraceResult.Type.BLOCK) {return true;}
-    PlayerEntity p =Minecraft.getInstance().player;
-    
+    if (event.getTarget().getType() != RayTraceResult.Type.BLOCK) {
+      return true;
+    }
+    PlayerEntity p = Minecraft.getInstance().player;
     ItemStack mainItemStack = p.getHeldItem(Hand.MAIN_HAND);
     Item mainItem = (mainItemStack.isEmpty()) ? null : mainItemStack.getItem();
     ItemStack offItemStack = p.getHeldItem(Hand.OFF_HAND);
@@ -140,14 +142,12 @@ public class BlockOverlay {
   }
 
   private boolean isBadBlock(DrawBlockHighlightEvent event) {
-    
     return false;
-    
-//    BlockPos pos = event.getTarget().getBlockPos();
-//    World world = event.getPlayer().world;
-//    IBlockState state = world.getBlockState(pos);
-//    Block block = state.getBlock();
-//    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
+    //    BlockPos pos = event.getTarget().getBlockPos();
+    //    World world = event.getPlayer().world;
+    //    IBlockState state = world.getBlockState(pos);
+    //    Block block = state.getBlock();
+    //    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
   }
 
   private Vec3d getViewerPosition(float partialTicks) {

@@ -89,7 +89,7 @@ public class ItemSimilsax extends Item {
     double xIn = vec.x - pos.getX(),
         yIn = vec.y - pos.getY(),
         zIn = vec.z - pos.getZ();
-    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
+//    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
     //if the middle was clicked, place on the opposite side
     int centeredSides = 0;
     if (side != 0 && side != 1)
@@ -105,22 +105,19 @@ public class ItemSimilsax extends Item {
     int[] sides;
     switch (sideIn) {
       case DOWN:
-      case UP:
-        SimilsaxTranstructors.log.info("up down ZX");
+      case UP: 
         left = zIn;
         right = xIn;
         sides = sidesZX;
       break;
       case NORTH:
-      case SOUTH:
-        SimilsaxTranstructors.log.info("north south ZY");
+      case SOUTH: 
         left = xIn;
         right = yIn;
         sides = sidesXY;
       break;
       case WEST:
-      case EAST:
-        SimilsaxTranstructors.log.info("west east  YZ");
+      case EAST: 
         left = yIn;
         right = zIn;
         sides = sidesYZ;
