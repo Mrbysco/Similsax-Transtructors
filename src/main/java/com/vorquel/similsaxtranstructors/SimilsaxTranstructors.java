@@ -1,4 +1,5 @@
 package com.vorquel.similsaxtranstructors;
+
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -14,6 +15,15 @@ import org.apache.logging.log4j.Logger;
 @Mod(SimilsaxTranstructors.MODID)
 public class SimilsaxTranstructors {
 
+  // 
+  //}
+//  int arrow1 = 0;
+//  int arrow2 = 1;
+//  int arrow3 = 2;
+//  int arrow4 = 3;
+//  int cross = 4;
+//  int bullseye = 5;
+//  int cancel = 6;
   public static final String MODID = "similsaxtranstructors";
   //  public static final ItemSimilsaxTranstructor itemBasic = new ItemSimilsaxTranstructor("Basic");
   //  public static final ItemSimilsaxTranstructor itemAdvanced = new ItemSimilsaxTranstructor("Advanced");
@@ -26,8 +36,7 @@ public class SimilsaxTranstructors {
     ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
   }
 
-  private void setup(final FMLCommonSetupEvent event) {
-  }
+  private void setup(final FMLCommonSetupEvent event) {}
 
   @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
   public static class RegistryEvents {
@@ -35,7 +44,7 @@ public class SimilsaxTranstructors {
     @SubscribeEvent
     public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
       event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
-      .group(RegistryThing.itemGroup )).setRegistryName("transtructor_basic"));
+          .group(RegistryThing.itemGroup)).setRegistryName("transtructor_basic"));
     }
   }
 }

@@ -39,52 +39,42 @@ public class BlockOverlay {
   int cancel=6;
   private final float[][][] uvs = new float[7][4][];
   {
-    //arrow 1
-    uvs[0][0] = new float[] { 0, 0 };
-    uvs[0][1] = new float[] { 0, .5f };
-    uvs[0][2] = new float[] { .5f, .5f };
-    uvs[0][3] = new float[] { .5f, 0 };
+    //ararrow1ow 1
+    uvs[arrow1][0] = new float[] { 0, 0 };
+    uvs[arrow1][1] = new float[] { 0, .5f };
+    uvs[arrow1][2] = new float[] { .5f, .5f };
+    uvs[arrow1][3] = new float[] { .5f, 0 };
     //arrow 2
-    uvs[1][0] = new float[] { 0, .5f };
-    uvs[1][1] = new float[] { .5f, .5f };
-    uvs[1][2] = new float[] { .5f, 0 };
-    uvs[1][3] = new float[] { 0, 0 };
+    uvs[arrow2][0] = new float[] { 0, .5f };
+    uvs[arrow2][1] = new float[] { .5f, .5f };
+    uvs[arrow2][2] = new float[] { .5f, 0 };
+    uvs[arrow2][3] = new float[] { 0, 0 };
     //arrow 3
-    uvs[2][0] = new float[] { .5f, .5f };
-    uvs[2][1] = new float[] { .5f, 0 };
-    uvs[2][2] = new float[] { 0, 0 };
-    uvs[2][3] = new float[] { 0, .5f };
+    uvs[arrow3][0] = new float[] { .5f, .5f };
+    uvs[arrow3][1] = new float[] { .5f, 0 };
+    uvs[arrow3][2] = new float[] { 0, 0 };
+    uvs[arrow3][3] = new float[] { 0, .5f };
     //arrow 4
-    uvs[3][0] = new float[] { .5f, 0 };
-    uvs[3][1] = new float[] { 0, 0 };
-    uvs[3][2] = new float[] { 0, .5f };
-    uvs[3][3] = new float[] { .5f, .5f };
+    uvs[arrow4][0] = new float[] { .5f, 0 };
+    uvs[arrow4][1] = new float[] { 0, 0 };
+    uvs[arrow4][2] = new float[] { 0, .5f };
+    uvs[arrow4][3] = new float[] { .5f, .5f };
     //cross
-    uvs[4][0] = new float[] { .5f, 0 };
-    uvs[4][1] = new float[] { .5f, .5f };
-    uvs[4][2] = new float[] { 1, .5f };
-    uvs[4][3] = new float[] { 1, 0 };
+    uvs[cross][0] = new float[] { .5f, 0 };
+    uvs[cross][1] = new float[] { .5f, .5f };
+    uvs[cross][2] = new float[] { 1, .5f };
+    uvs[cross][3] = new float[] { 1, 0 };
     //bullseye
-    uvs[5][0] = new float[] { 0, .5f };
-    uvs[5][1] = new float[] { 0, 1 };
-    uvs[5][2] = new float[] { .5f, 1 };
-    uvs[5][3] = new float[] { .5f, .5f };
+    uvs[bullseye][0] = new float[] { 0, .5f };
+    uvs[bullseye][1] = new float[] { 0, 1 };
+    uvs[bullseye][2] = new float[] { .5f, 1 };
+    uvs[bullseye][3] = new float[] { .5f, .5f };
     //cancel
-    uvs[6][0] = new float[] { .5f, .5f };
-    uvs[6][1] = new float[] { .5f, 1 };
-    uvs[6][2] = new float[] { 1, 1 };
-    uvs[6][3] = new float[] { 1, .5f };
+    uvs[cancel][0] = new float[] { .5f, .5f };
+    uvs[cancel][1] = new float[] { .5f, 1 };
+    uvs[cancel][2] = new float[] { 1, 1 };
+    uvs[cancel][3] = new float[] { 1, .5f };
   }
-//  private final int[][] lookUps = new int[7][6];
-//  {
-//    lookUps[0] = new int[] { 2, 5, 1, 1, 4, 2 };
-//    lookUps[1] = new int[] { 0, 4, 3, 3, 5, 0 };
-//    lookUps[2] = new int[] { 1, 2, 5, 2, 1, 4 };
-//    lookUps[3] = new int[] { 3, 0, 4, 0, 3, 5 };
-//    lookUps[4] = new int[] { 5, 1, 2, 4, 2, 1 };
-//    lookUps[5] = new int[] { 4, 3, 0, 5, 0, 3 };
-//    lookUps[6] = new int[] { 6, 6, 6, 6, 6, 6 };
-//  }
 
   @SubscribeEvent
   public void renderOverlay(DrawBlockHighlightEvent event) {
@@ -101,7 +91,7 @@ public class BlockOverlay {
       if (isBadBlock(event)) {
         indexd = Direction.UP;
         index = 6;
-        look=new int[] { 6, 6, 6, 6, 6, 6 }; 
+        look=new int[] { cancel,cancel,cancel,cancel,cancel,cancel}; 
       }
       else {
         indexd = ItemSimilsax.getSide(result.getFace(), h, mPos);
@@ -111,19 +101,19 @@ public class BlockOverlay {
             look= new int[] { 2, 5, 1, 1, 4, 2 };
             break;
           case UP:
-            look=new int[] { 0, 4, 3, 3, 5, 0 };
+            look=new int[] { arrow1, 4, 3, 3, 5, arrow1 };
             break;
           case NORTH:
             look=new int[] { 1, 2, 5, 2, 1, 4 }; 
             break;
           case SOUTH:
-            look= new int[] { 3, 0, 4, 0, 3, 5 };
+            look= new int[] { 3, arrow1, 4, arrow1, 3, 5 };
             break;
           case WEST:
             look=new int[] { 5, 1, 2, 4, 2, 1 };
             break;
           case EAST://5
-            look= new int[] { 4, 3, 0, 5, 0, 3 }; 
+            look= new int[] { 4, 3, arrow1, 5, arrow1, 3 }; 
             break;
           default:
             break;
