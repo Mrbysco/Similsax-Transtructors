@@ -30,6 +30,13 @@ public class BlockOverlay {
       vs[i] = new Vec3d(x, y, z);
     }
   }
+  int arrow1=0;
+  int arrow2=1;
+  int arrow3=2;
+  int arrow4=3;
+  int cross=4;
+  int bullseye=5;
+  int cancel=6;
   private final float[][][] uvs = new float[7][4][];
   {
     //arrow 1
@@ -68,16 +75,16 @@ public class BlockOverlay {
     uvs[6][2] = new float[] { 1, 1 };
     uvs[6][3] = new float[] { 1, .5f };
   }
-  private final int[][] lookUps = new int[7][6];
-  {
-    lookUps[0] = new int[] { 2, 5, 1, 1, 4, 2 };
-    lookUps[1] = new int[] { 0, 4, 3, 3, 5, 0 };
-    lookUps[2] = new int[] { 1, 2, 5, 2, 1, 4 };
-    lookUps[3] = new int[] { 3, 0, 4, 0, 3, 5 };
-    lookUps[4] = new int[] { 5, 1, 2, 4, 2, 1 };
-    lookUps[5] = new int[] { 4, 3, 0, 5, 0, 3 };
-    lookUps[6] = new int[] { 6, 6, 6, 6, 6, 6 };
-  }
+//  private final int[][] lookUps = new int[7][6];
+//  {
+//    lookUps[0] = new int[] { 2, 5, 1, 1, 4, 2 };
+//    lookUps[1] = new int[] { 0, 4, 3, 3, 5, 0 };
+//    lookUps[2] = new int[] { 1, 2, 5, 2, 1, 4 };
+//    lookUps[3] = new int[] { 3, 0, 4, 0, 3, 5 };
+//    lookUps[4] = new int[] { 5, 1, 2, 4, 2, 1 };
+//    lookUps[5] = new int[] { 4, 3, 0, 5, 0, 3 };
+//    lookUps[6] = new int[] { 6, 6, 6, 6, 6, 6 };
+//  }
 
   @SubscribeEvent
   public void renderOverlay(DrawBlockHighlightEvent event) {
@@ -90,14 +97,40 @@ public class BlockOverlay {
       Vec3d h = m.getHitVec();
       Direction indexd;
       int index = 6;
+      int[] look = new int[6];
       if (isBadBlock(event)) {
         indexd = Direction.UP;
         index = 6;
+        look=new int[] { 6, 6, 6, 6, 6, 6 }; 
       }
       else {
         indexd = ItemSimilsax.getSide(result.getFace(), h, mPos);
         index = indexd.ordinal();
+        switch(indexd){
+          case DOWN:
+            look= new int[] { 2, 5, 1, 1, 4, 2 };
+            break;
+          case UP:
+            look=new int[] { 0, 4, 3, 3, 5, 0 };
+            break;
+          case NORTH:
+            look=new int[] { 1, 2, 5, 2, 1, 4 }; 
+            break;
+          case SOUTH:
+            look= new int[] { 3, 0, 4, 0, 3, 5 };
+            break;
+          case WEST:
+            look=new int[] { 5, 1, 2, 4, 2, 1 };
+            break;
+          case EAST://5
+            look= new int[] { 4, 3, 0, 5, 0, 3 }; 
+            break;
+          default:
+            break;
+          
+        }
       }
+     
       //      Minecraft.getInstance().eng
       //was renderEngine
       Minecraft.getInstance().textureManager.bindTexture(overlayLocation);
@@ -119,17 +152,17 @@ public class BlockOverlay {
       SimilsaxTranstructors.log.info("{} ::  hm", index); 
       int TOP = 1, EAST=0, SOUTH=2,WEST=3, BOTTOM = 4,NORTH=5 ;
       GL11.glTranslatef(P, 0, 0);
-      drawSide(X, Y, Z, uvs[lookUps[index][EAST]]);// this one has to be est or west side
+      drawSide(X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
       GL11.glTranslatef(N, P, 0);
-      drawSide(Y, Z, X, uvs[lookUps[index][TOP]]);   // TOP
+      drawSide(Y, Z, X, uvs[look[TOP]]);   // TOP
       GL11.glTranslatef(0, N, P);
-      drawSide(Z, X, Y, uvs[lookUps[index][SOUTH]]);
+      drawSide(Z, X, Y, uvs[look[SOUTH]]);
       GL11.glTranslatef(N, 0, N);
-      drawSide(0, Z, Y, uvs[lookUps[index][WEST]]);
+      drawSide(0, Z, Y, uvs[look[WEST]]);
       GL11.glTranslatef(P, N, 0);
-      drawSide(0, X, Z, uvs[lookUps[index][BOTTOM]]);
+      drawSide(0, X, Z, uvs[look[BOTTOM]]);
       GL11.glTranslatef(0, P, N);
-      drawSide(0, Y, X, uvs[lookUps[index][NORTH]]);
+      drawSide(0, Y, X, uvs[look[NORTH]]);
       GL11.glPopMatrix();
       GL11.glPopAttrib();
     }
