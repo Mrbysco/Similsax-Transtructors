@@ -95,7 +95,11 @@ public class BlockOverlay {
         look = new int[] { cancel, cancel, cancel, cancel, cancel, cancel };
       }
       else {
-        indexd = ItemSimilsax.getSide(result.getFace(), hitVec, mPos).getOpposite();
+        indexd = ItemSimilsax.getSide(result.getFace(), hitVec, mPos);
+        if (indexd == null) {
+          return;
+        }
+        indexd = indexd.getOpposite();
         index = indexd.ordinal();
         switch (indexd) {
           case DOWN:
@@ -131,14 +135,35 @@ public class BlockOverlay {
       double yFix = 0.08;
       double zFix = 0;
       double yDiff = hitVec.y - mPos.getY();
+      //      if (yDiff > ItemSimilsax.hi && yDiff < ItemSimilsax.lo) {
+      //        //edge corner case
+      //        return;
+      //      }
+      //      if (result.getFace() != Direction.DOWN && result.getFace() != Direction.UP) {
       if (yDiff < ItemSimilsax.lo) {
         //low side
         yFix = -1.62;
-        SimilsaxTranstructors.log.info("{} ::  LOW", indexd);
       }
       else if (yDiff > ItemSimilsax.hi) {
         yFix = -1.62;
-        SimilsaxTranstructors.log.info("{} ::  HIGH", indexd);
+      }
+      //      }
+      if (result.getFace() == Direction.SOUTH) {
+        zFix = -1;
+      }
+      else if (result.getFace() == Direction.EAST) {
+        xFix = -1;
+      }
+      else if (result.getFace() == Direction.UP) {
+        yFix += -1;
+        if (indexd != Direction.UP) {
+          yFix += 1.7;
+        }
+      }
+      else if (result.getFace() == Direction.DOWN) {
+        if (indexd != Direction.DOWN) {
+          yFix += 1.7;
+        }
       }
       GL11.glTranslated(mPos.getX() + xFix, mPos.getY() + yFix, mPos.getZ() + zFix);
       GL11.glTranslated(-v.x, -v.y, -v.z);

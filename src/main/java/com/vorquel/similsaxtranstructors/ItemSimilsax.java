@@ -40,7 +40,7 @@ public class ItemSimilsax extends Item {
   }
 
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack, int range) {
-    if (range == 0) {
+    if (range == 0 || pos == null || side == null) {
       return ActionResultType.PASS;
     }
     pos = pos.offset(side);
@@ -48,7 +48,6 @@ public class ItemSimilsax extends Item {
     Block otherBlock = otherState.getBlock();
     if (block == otherBlock // && state.getProperties().equals(otherState.getProperties())
     ) {
-      SimilsaxTranstructors.log.info("go to range minus one {}", range);
       return tower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
     else if (world.isAirBlock(pos)) {
@@ -68,7 +67,6 @@ public class ItemSimilsax extends Item {
           }
         }
       }
-      SimilsaxTranstructors.log.info("gbuild at  {}", pos);
       world.setBlockState(pos, state);
       world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
           block.getSoundType(
@@ -84,7 +82,7 @@ public class ItemSimilsax extends Item {
   private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
   private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
   public final static float lo = .25f;
-  public final static float hi = .75f;
+  public final static float hi = 1 - lo;
 
   public static Direction getSide(Direction sideIn, Vec3d vec, BlockPos pos) {
     int side = sideIn.ordinal();
@@ -92,16 +90,33 @@ public class ItemSimilsax extends Item {
         yIn = vec.y - pos.getY(),
         zIn = vec.z - pos.getZ();
     //    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
+    //cutoff check for null means, in the very very corners, dont render anything since its messed up
+    //    double CUTOFF = 0.1;
+    //    if ((xIn != 0 && xIn < CUTOFF)
+    //        || (yIn != 0 && yIn < CUTOFF)
+    //        || (zIn != 0 && zIn < CUTOFF)) {
+    //      return null;
+    //    }
+    //    CUTOFF = 0.9;
+    //    if ((xIn != 0 && xIn > CUTOFF)
+    //        || (yIn != 0 && yIn > CUTOFF)
+    //        || (zIn != 0 && zIn > CUTOFF)) {
+    //      return null;
+    //    }
     //if the middle was clicked, place on the opposite side
     int centeredSides = 0;
-    if (side != 0 && side != 1)
+    if (side != 0 && side != 1) {
       centeredSides += yIn > lo && yIn < hi ? 1 : 0;
-    if (side != 2 && side != 3)
+    }
+    if (side != 2 && side != 3) {
       centeredSides += zIn > lo && zIn < hi ? 1 : 0;
-    if (side != 4 && side != 5)
+    }
+    if (side != 4 && side != 5) {
       centeredSides += xIn > lo && xIn < hi ? 1 : 0;
-    if (centeredSides == 2)
+    }
+    if (centeredSides == 2) {
       return Direction.values()[side].getOpposite();
+    }
     //otherwise, place on the nearest side
     double left, right;
     int[] sides;
@@ -126,6 +141,13 @@ public class ItemSimilsax extends Item {
       break;
       default:
         return Direction.UP;
+    }
+    //    SimilsaxTranstructors.log.info("{} :: {}, are the left/rights ", left, right);
+    double cutoff = lo;
+    boolean leftCorner = left < cutoff || left > 1 - cutoff;
+    boolean rightCorner = right < cutoff || right > 1 - cutoff;
+    if (leftCorner && rightCorner) {
+      return null;
     }
     boolean b0 = left > right;
     boolean b1 = left > 1 - right;
