@@ -1,5 +1,6 @@
 package com.vorquel.similsaxtranstructors;
 
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -16,7 +17,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 public class BlockOverlay {
 
@@ -85,7 +85,7 @@ public class BlockOverlay {
     if (m.getType() == RayTraceResult.Type.BLOCK) {
       BlockRayTraceResult result = ((BlockRayTraceResult) m);
       BlockPos mPos = new BlockPos(m.getHitVec()); //m.getBlockPos();
-      Vec3d h = m.getHitVec();
+      Vec3d hitVec = m.getHitVec();
       Direction indexd;
       int index = 6;
       int[] look = new int[6];
@@ -95,7 +95,7 @@ public class BlockOverlay {
         look = new int[] { cancel, cancel, cancel, cancel, cancel, cancel };
       }
       else {
-        indexd = ItemSimilsax.getSide(result.getFace(), h, mPos).getOpposite();
+        indexd = ItemSimilsax.getSide(result.getFace(), hitVec, mPos).getOpposite();
         index = indexd.ordinal();
         switch (indexd) {
           case DOWN:
@@ -126,8 +126,21 @@ public class BlockOverlay {
       Vec3d v = getViewerPosition(event.getPartialTicks());
       GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
       GL11.glPushMatrix();
-      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd,v.x,v.y,v.z);
-      GL11.glTranslated(mPos.getX(), mPos.getY(), mPos.getZ());
+      //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
+      double xFix = 0;
+      double yFix = 0.08;
+      double zFix = 0;
+      double yDiff = hitVec.y - mPos.getY();
+      if (yDiff < ItemSimilsax.lo) {
+        //low side
+        yFix = -1.62;
+        SimilsaxTranstructors.log.info("{} ::  LOW", indexd);
+      }
+      else if (yDiff > ItemSimilsax.hi) {
+        yFix = -1.62;
+        SimilsaxTranstructors.log.info("{} ::  HIGH", indexd);
+      }
+      GL11.glTranslated(mPos.getX() + xFix, mPos.getY() + yFix, mPos.getZ() + zFix);
       GL11.glTranslated(-v.x, -v.y, -v.z);
       GL11.glEnable(GL11.GL_ALPHA_TEST);
       GL11.glAlphaFunc(GL11.GL_GREATER, 0);
@@ -137,10 +150,9 @@ public class BlockOverlay {
       //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract      
       final float P = 1 / 256f, N = -1 / 256f;
       final int X = 1, Y = 2, Z = 4;
-      if (index >= 2 && index <= 5){
+      if (index >= 2 && index <= 5) {
         GL11.glTranslatef(0, -1.7F, 0);//2345
       }
-      SimilsaxTranstructors.log.info("{} ::  hm", index);
       int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
       //draw east
       GL11.glTranslatef(P, 0, 0);

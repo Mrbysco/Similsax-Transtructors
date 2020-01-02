@@ -83,8 +83,8 @@ public class ItemSimilsax extends Item {
   private static final int[] sidesXY = new int[] { 4, 5, 0, 1 };
   private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
   private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
-  final static float lo = .25f;
-  final static float hi = .75f;
+  public final static float lo = .25f;
+  public final static float hi = .75f;
 
   public static Direction getSide(Direction sideIn, Vec3d vec, BlockPos pos) {
     int side = sideIn.ordinal();
