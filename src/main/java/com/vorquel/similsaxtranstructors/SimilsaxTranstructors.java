@@ -32,7 +32,9 @@ public class SimilsaxTranstructors {
     @SubscribeEvent
     public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
       event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
-          .group(RegistryThing.itemGroup)).setRegistryName("transtructor_basic"));
+          .maxDamage(800)).setRegistryName("transtructor_basic"));
+      event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
+          .maxDamage(9000)).setRegistryName("transtructor_advanced"));
     }
   }
 }

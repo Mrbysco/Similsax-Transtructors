@@ -11,14 +11,14 @@
       "item": "minecraft:iron_ingot"
     },
     "o":  {
-		"item": "minecraft:cyan_dye"
+		"item": "minecraft:ender_pearl"
 	},
     "/":  {
-		"item": "minecraft:stick"
+		"item": "minecraft:diamond"
 	}
     
   },
   "result": {
-    "item": "similsaxtranstructors:transtructor_basic"
+    "item": "similsaxtranstructors:transtructor_advanced"
   }
 }
