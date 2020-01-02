@@ -1,5 +1,7 @@
 package com.vorquel.similsaxtranstructors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -8,25 +10,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-//, name = "Similsax Transtructors", updateJSON = "https://raw.githubusercontent.com/PrinceOfAmber/Similsax-Transtructors/master/update.json"
 @Mod(SimilsaxTranstructors.MODID)
 public class SimilsaxTranstructors {
 
-  // 
-  //}
-//  int arrow1 = 0;
-//  int arrow2 = 1;
-//  int arrow3 = 2;
-//  int arrow4 = 3;
-//  int cross = 4;
-//  int bullseye = 5;
-//  int cancel = 6;
   public static final String MODID = "similsaxtranstructors";
-  //  public static final ItemSimilsaxTranstructor itemBasic = new ItemSimilsaxTranstructor("Basic");
-  //  public static final ItemSimilsaxTranstructor itemAdvanced = new ItemSimilsaxTranstructor("Advanced");
   static Logger log = LogManager.getLogger(MODID);
 
   public SimilsaxTranstructors() {

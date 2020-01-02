@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class ItemSimilsax extends Item {
 
   public ItemSimilsax(Properties properties) {
-    super(properties);
+    super(properties.maxDamage(2000));
   }
 
   private final static int range = 32;
@@ -52,7 +52,10 @@ public class ItemSimilsax extends Item {
     }
     else if (world.isAirBlock(pos)) {
       //      if (!world.mayPlace(block, pos, false, side.getOpposite(), null)) return ActionResultType.PASS;
-      //      stack.damageItem(1, player);
+      stack.damageItem(1, player, (p) -> {
+        //        p.sendBreakAnimation(hand); 
+      });
+      //            stack.damageItem(1, player);
       if (stack.getCount() == 0)
         world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT,
             SoundCategory.PLAYERS, 1f, 1f);
@@ -89,20 +92,6 @@ public class ItemSimilsax extends Item {
     double xIn = vec.x - pos.getX(),
         yIn = vec.y - pos.getY(),
         zIn = vec.z - pos.getZ();
-    //    SimilsaxTranstructors.log.info("{} :: {}, {}, {}", side, xIn, yIn, zIn);
-    //cutoff check for null means, in the very very corners, dont render anything since its messed up
-    //    double CUTOFF = 0.1;
-    //    if ((xIn != 0 && xIn < CUTOFF)
-    //        || (yIn != 0 && yIn < CUTOFF)
-    //        || (zIn != 0 && zIn < CUTOFF)) {
-    //      return null;
-    //    }
-    //    CUTOFF = 0.9;
-    //    if ((xIn != 0 && xIn > CUTOFF)
-    //        || (yIn != 0 && yIn > CUTOFF)
-    //        || (zIn != 0 && zIn > CUTOFF)) {
-    //      return null;
-    //    }
     //if the middle was clicked, place on the opposite side
     int centeredSides = 0;
     if (side != 0 && side != 1) {
