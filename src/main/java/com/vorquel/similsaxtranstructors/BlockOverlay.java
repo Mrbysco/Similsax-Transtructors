@@ -15,7 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.DrawHighlightEvent;
+//import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class BlockOverlay {
@@ -77,7 +78,7 @@ public class BlockOverlay {
   }
 
   @SubscribeEvent
-  public void renderOverlay(DrawBlockHighlightEvent event) {
+  public void renderOverlay(DrawHighlightEvent event) {
     if (shouldSkip(event)) {
       return;
     }
@@ -202,7 +203,7 @@ public class BlockOverlay {
     }
   }
 
-  private boolean shouldSkip(DrawBlockHighlightEvent event) {
+  private boolean shouldSkip(DrawHighlightEvent event) {
     if (event.getTarget().getType() != RayTraceResult.Type.BLOCK) {
       return true;
     }
@@ -214,7 +215,7 @@ public class BlockOverlay {
     return !(mainItem instanceof ItemSimilsax || offItem instanceof ItemSimilsax);
   }
 
-  private boolean isBadBlock(DrawBlockHighlightEvent event) {
+  private boolean isBadBlock(DrawHighlightEvent event) {
     return false;
     //    BlockPos pos = event.getTarget().getBlockPos();
     //    World world = event.getPlayer().world;
@@ -225,9 +226,10 @@ public class BlockOverlay {
 
   private Vec3d getViewerPosition(float partialTicks) {
     Entity viewer = Minecraft.getInstance().getRenderViewEntity();
-    double x = partial(partialTicks, viewer.prevPosX, viewer.posX);
-    double y = partial(partialTicks, viewer.prevPosY, viewer.posY);
-    double z = partial(partialTicks, viewer.prevPosZ, viewer.posZ);
+    //    viewer.lastTickPosX
+    double x = partial(partialTicks, viewer.prevPosX, viewer.lastTickPosX);
+    double y = partial(partialTicks, viewer.prevPosY, viewer.lastTickPosY);
+    double z = partial(partialTicks, viewer.prevPosZ, viewer.lastTickPosZ);
     return new Vec3d(x, y, z);
   }
 
@@ -244,7 +246,13 @@ public class BlockOverlay {
     Tessellator.getInstance().draw();
   }
 
-  private void addVertex(double u, double v, int i) {
-    Tessellator.getInstance().getBuffer().pos(vs[i].x, vs[i].y, vs[i].z).tex(u, v).endVertex();
+  private void addVertex(float u, float v, int i) {
+    //    Tessellator.getInstance().getBuffer().func_225582_a_(p_225582_1_, p_225582_3_, p_225582_5_)
+    //for pos
+    //other is for tex
+    Tessellator.getInstance().getBuffer().func_225582_a_(vs[i].x, vs[i].y, vs[i].z)
+        //        .func_225583_a_(u, v)
+        .func_225585_a_((int) u, (int) v)
+        .endVertex();
   }
 }

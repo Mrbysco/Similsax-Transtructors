@@ -58,7 +58,7 @@ public class ItemSimilsax extends Item {
       });
       //            stack.damageItem(1, player);
       if (stack.getCount() == 0)
-        world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT,
+        world.playSound(null, player.serverPosX, player.serverPosY, player.serverPosZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT,
             SoundCategory.PLAYERS, 1f, 1f);
       if (!player.isCreative()) {
         for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
