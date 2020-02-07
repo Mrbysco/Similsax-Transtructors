@@ -250,9 +250,9 @@ public class BlockOverlay {
     //    Tessellator.getInstance().getBuffer().func_225582_a_(p_225582_1_, p_225582_3_, p_225582_5_)
     //for pos
     //other is for tex
-    Tessellator.getInstance().getBuffer().func_225582_a_(vs[i].x, vs[i].y, vs[i].z)
-        //        .func_225583_a_(u, v)
-        .func_225585_a_((int) u, (int) v)
-        .endVertex();
+    //    Tessellator.getInstance().getBuffer().tex(vs[i].x, vs[i].y, vs[i].z)
+    //        //        .func_225583_a_(u, v)
+    //        .func_225585_a_((int) u, (int) v)
+    //        .endVertex();
   }
 }
