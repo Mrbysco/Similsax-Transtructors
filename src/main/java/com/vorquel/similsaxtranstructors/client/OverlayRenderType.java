@@ -15,8 +15,8 @@ public class OverlayRenderType extends RenderType {
 
   public static RenderType overlayRenderer(ResourceLocation resourceLocation) {
     RenderType.State state = RenderType.State.getBuilder()
-        .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-        .cull(RenderState.CULL_DISABLED)//enableCull
+        .texture(new RenderState.TextureState(resourceLocation, false, false))
+        .cull(RenderState.CULL_DISABLED)
         .transparency(TRANSLUCENT_TRANSPARENCY)
         .target(RenderState.TRANSLUCENT_TARGET)
         .build(true);

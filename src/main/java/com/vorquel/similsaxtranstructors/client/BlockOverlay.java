@@ -91,11 +91,9 @@ public class BlockOverlay {
     BlockPos blockPos = new BlockPos(result.getPos());
     Vector3d hitVec = result.getHitVec();
     Direction indexd;
-    int index = 6;
     int[] look = new int[6];
     if (isBadBlock(event)) {
       indexd = Direction.UP;
-      index = 6;
       look = new int[] { cancel, cancel, cancel, cancel, cancel, cancel };
     }
     else {
@@ -104,7 +102,6 @@ public class BlockOverlay {
         return;
       }
       indexd = indexd.getOpposite();
-      index = indexd.ordinal();
       switch (indexd) {
         case DOWN:
           look = new int[] { arrow3, bullseye, arrow2, arrow2, cross, arrow3 };
@@ -121,7 +118,7 @@ public class BlockOverlay {
         case WEST:
           look = new int[] { bullseye, arrow2, arrow3, cross, arrow3, arrow2 };
         break;
-        case EAST://5
+        case EAST:
           look = new int[] { cross, arrow4, arrow1, bullseye, arrow1, arrow4 };
         break;
         default:
@@ -134,7 +131,7 @@ public class BlockOverlay {
     matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
     //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
     double yDiff = hitVec.y - blockPos.getY();
-    if (yDiff > ItemSimilsax.hi && yDiff < ItemSimilsax.lo) {
+    if (yDiff > ItemSimilsax.HI && yDiff < ItemSimilsax.LO) {
       //edge corner case
       return;
     }

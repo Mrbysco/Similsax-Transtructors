@@ -1,7 +1,9 @@
 package com.vorquel.similsaxtranstructors;
 
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -10,18 +12,26 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemSimilsax extends Item {
+
+  private static final int[] sidesXY = new int[] { 4, 5, 0, 1 };
+  private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
+  private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
+  public final static float LO = 0.25F;
+  public final static float HI = 1 - LO;
 
   public ItemSimilsax(Properties properties) {
     super(properties.group(ItemGroup.TOOLS));
   }
-
-  private final static int range = 32;
 
   @Override
   public ActionResultType onItemUse(ItemUseContext context) {
@@ -36,12 +46,19 @@ public class ItemSimilsax extends Item {
         side, blockStack);
   }
 
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
+  }
+
   private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack) {
+    int range = (this == SimilsaxRegistry.advanced) ? ConfigHandler.ADVANCEDRANGE.get() : ConfigHandler.BASICRANGE.get();
     return tower(stack, player, block, state, world, pos, side, blockStack, range);
   }
 
-  private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack, int range) {
-    if (range == 0 || pos == null || side == null) {
+  private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
+    if (range == 0 || pos == null || side == null || blockStack.isEmpty()) {
       return ActionResultType.PASS;
     }
     pos = pos.offset(side);
@@ -51,39 +68,29 @@ public class ItemSimilsax extends Item {
       return tower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
     else if (world.isAirBlock(pos)) {
-      //      if (!world.mayPlace(block, pos, false, side.getOpposite(), null)) return ActionResultType.PASS;
       stack.damageItem(1, player, (p) -> {
         stack.setCount(0);
       });
-      //            stack.damageItem(1, player);
-      if (stack.getCount() == 0)
-        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1f, 1f);
       if (!player.isCreative()) {
         for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
           ItemStack localStack = player.inventory.getStackInSlot(i);
-          if (localStack.isEmpty()) continue;
-          if (localStack.isItemEqual(blockStack)) {
+          if (!localStack.isEmpty() && localStack.isItemEqual(blockStack)) {
             player.inventory.decrStackSize(i, 1);
-            player.openContainer.detectAndSendChanges();
+            if (player.openContainer != null) {
+              player.openContainer.detectAndSendChanges();
+            }
             break;
           }
         }
       }
       world.setBlockState(pos, state);
-      world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-          block.getSoundType(state, world, pos, player).getPlaceSound(), SoundCategory.BLOCKS, .5F, .5F);
+      world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, block.getSoundType(state, world, pos, player).getPlaceSound(), SoundCategory.BLOCKS, .5F, .5F);
       return ActionResultType.SUCCESS;
     }
     else {
       return ActionResultType.PASS;
     }
   }
-
-  private static final int[] sidesXY = new int[] { 4, 5, 0, 1 };
-  private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
-  private static final int[] sidesZX = new int[] { 2, 3, 4, 5 };
-  public final static float lo = .25f;
-  public final static float hi = 1 - lo;
 
   public static Direction getSide(Direction sideIn, Vector3d vec, BlockPos pos) {
     int side = sideIn.ordinal();
@@ -93,13 +100,13 @@ public class ItemSimilsax extends Item {
     //if the middle was clicked, place on the opposite side
     int centeredSides = 0;
     if (side != 0 && side != 1) {
-      centeredSides += yIn > lo && yIn < hi ? 1 : 0;
+      centeredSides += yIn > LO && yIn < HI ? 1 : 0;
     }
     if (side != 2 && side != 3) {
-      centeredSides += zIn > lo && zIn < hi ? 1 : 0;
+      centeredSides += zIn > LO && zIn < HI ? 1 : 0;
     }
     if (side != 4 && side != 5) {
-      centeredSides += xIn > lo && xIn < hi ? 1 : 0;
+      centeredSides += xIn > LO && xIn < HI ? 1 : 0;
     }
     if (centeredSides == 2) {
       return Direction.values()[side].getOpposite();
@@ -130,7 +137,7 @@ public class ItemSimilsax extends Item {
         return Direction.UP;
     }
     //    SimilsaxTranstructors.log.info("{} :: {}, are the left/rights ", left, right);
-    double cutoff = lo;
+    double cutoff = LO;
     boolean leftCorner = left < cutoff || left > 1 - cutoff;
     boolean rightCorner = right < cutoff || right > 1 - cutoff;
     if (leftCorner && rightCorner) {

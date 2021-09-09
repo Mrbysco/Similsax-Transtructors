@@ -1,4 +1,6 @@
 {
 	"item.similsaxtranstructors.transtructor_basic":"Basic Transtructor",
-	"item.similsaxtranstructors.transtructor_advanced":"Durable Transtructor"
+	"item.similsaxtranstructors.transtructor_advanced":"Advanced Transtructor",
+	"item.similsaxtranstructors.transtructor_basic.tooltip":"Places matching blocks in any direction",
+	"item.similsaxtranstructors.transtructor_advanced.tooltip":"Places matching blocks in any direction"
 }
