@@ -42,8 +42,12 @@ public class ItemSimilsax extends Item {
       return ActionResultType.PASS;
     }
     Direction side = getSide(context.getFace(), context.getHitVec(), context.getPos());
-    return this.tower(context.getItem(), context.getPlayer(), block.getBlock(), block, context.getWorld(), context.getPos(),
-        side, blockStack);
+    int initialRange = isAdvanced() ? ConfigHandler.ADVANCEDRANGE.get() : ConfigHandler.BASICRANGE.get();
+    return this.recursiveTower(context.getItem(), player, block.getBlock(), block, context.getWorld(), context.getPos(), side, blockStack, initialRange);
+  }
+
+  private boolean isAdvanced() {
+    return this == SimilsaxRegistry.advanced;
   }
 
   @Override
@@ -52,22 +56,15 @@ public class ItemSimilsax extends Item {
     tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
   }
 
-  private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, ItemStack blockStack) {
-    int range = (this == SimilsaxRegistry.advanced) ? ConfigHandler.ADVANCEDRANGE.get() : ConfigHandler.BASICRANGE.get();
-    return tower(stack, player, block, state, world, pos, side, blockStack, range);
-  }
-
-  private ActionResultType tower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
+  private ActionResultType recursiveTower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
     if (range == 0 || pos == null || side == null || blockStack.isEmpty()) {
       return ActionResultType.PASS;
     }
     pos = pos.offset(side);
-    BlockState otherState = world.getBlockState(pos);
-    Block otherBlock = otherState.getBlock();
-    if (block == otherBlock) {
-      return tower(stack, player, block, state, world, pos, side, blockStack, range - 1);
-    }
-    else if (world.isAirBlock(pos)) {
+    final BlockState otherState = world.getBlockState(pos);
+    final Block otherBlock = otherState.getBlock();
+    final boolean canSkip = this.isAdvanced();
+    if (canBuildHere(world, pos)) {
       stack.damageItem(1, player, (p) -> {
         stack.setCount(0);
       });
@@ -84,12 +81,24 @@ public class ItemSimilsax extends Item {
         }
       }
       world.setBlockState(pos, state);
-      world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, block.getSoundType(state, world, pos, player).getPlaceSound(), SoundCategory.BLOCKS, .5F, .5F);
+      world.playSound(player, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, block.getSoundType(state, world, pos, player).getPlaceSound(), SoundCategory.BLOCKS, .5F, .5F);
       return ActionResultType.SUCCESS;
+    }
+    else if (canSkip || doBlocksMatch(block, otherBlock)) {
+      //if u cant build here, does it match to keep going
+      return recursiveTower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
     else {
       return ActionResultType.PASS;
     }
+  }
+
+  private boolean canBuildHere(World world, BlockPos pos) {
+    return world.isAirBlock(pos);
+  }
+
+  private boolean doBlocksMatch(Block block, Block otherBlock) {
+    return block == otherBlock;
   }
 
   public static Direction getSide(Direction sideIn, Vector3d vec, BlockPos pos) {
