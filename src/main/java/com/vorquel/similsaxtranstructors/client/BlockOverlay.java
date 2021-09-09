@@ -133,47 +133,16 @@ public class BlockOverlay {
     IVertexBuilder builder = renderTypeBuffer.getBuffer(renderType);
     matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
     //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
-    double xFix = 0;
-    double yFix = 0.08;
-    double zFix = 0;
     double yDiff = hitVec.y - blockPos.getY();
-    //      if (yDiff > ItemSimilsax.hi && yDiff < ItemSimilsax.lo) {
-    //        //edge corner case
-    //        return;
-    //      }
-    //      if (result.getFace() != Direction.DOWN && result.getFace() != Direction.UP) {
-    if (yDiff < ItemSimilsax.lo) {
-      //low side
-      yFix = -1.62;
+    if (yDiff > ItemSimilsax.hi && yDiff < ItemSimilsax.lo) {
+      //edge corner case
+      return;
     }
-    else if (yDiff > ItemSimilsax.hi) {
-      yFix = -1.62;
-    }
-    //      }
-    if (result.getFace() == Direction.SOUTH) {
-      zFix = -1;
-    }
-    else if (result.getFace() == Direction.EAST) {
-      xFix = -1;
-    }
-    else if (result.getFace() == Direction.UP) {
-      yFix += -1;
-      if (indexd != Direction.UP) {
-        yFix += 1.7;
-      }
-    }
-    else if (result.getFace() == Direction.DOWN) {
-      if (indexd != Direction.DOWN) {
-        yFix += 1.7;
-      }
-    }
-    matrixStack.translate(blockPos.getX() + xFix, blockPos.getY() + yFix, blockPos.getZ() + zFix);
+    matrixStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract
     final float P = 1 / 256f, N = -1 / 256f;
     final int X = 1, Y = 2, Z = 4;
-    if (index >= 2 && index <= 5) {
-      matrixStack.translate(0, -1.7F, 0);//2345
-    }
+    //now draw the box
     int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
     //draw east
     matrixStack.translate(P, 0, 0);

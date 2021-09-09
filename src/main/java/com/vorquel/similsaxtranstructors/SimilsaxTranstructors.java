@@ -17,30 +17,29 @@ import net.minecraftforge.fml.loading.FMLPaths;
 @Mod(SimilsaxTranstructors.MODID)
 public class SimilsaxTranstructors {
 
-	public static final String MODID = "similsaxtranstructors";
-	static Logger log = LogManager.getLogger(MODID);
+  public static final String MODID = "similsaxtranstructors";
+  static Logger log = LogManager.getLogger(MODID);
 
-	public SimilsaxTranstructors() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		MinecraftForge.EVENT_BUS.register(this);
-		ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
+  public SimilsaxTranstructors() {
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    MinecraftForge.EVENT_BUS.register(this);
+    ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
+    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+      MinecraftForge.EVENT_BUS.register(new BlockOverlay());
+    });
+  }
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			MinecraftForge.EVENT_BUS.register(new BlockOverlay());
-		});
-	}
+  private void setup(final FMLCommonSetupEvent event) {}
 
-	private void setup(final FMLCommonSetupEvent event) {}
+  @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+  public static class RegistryEvents {
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class RegistryEvents {
-
-		@SubscribeEvent
-		public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-			event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
-					.maxDamage(800)).setRegistryName("transtructor_basic"));
-			event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
-					.maxDamage(9000)).setRegistryName("transtructor_advanced"));
-		}
-	}
+    @SubscribeEvent
+    public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+      event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
+          .maxDamage(800)).setRegistryName("transtructor_basic"));
+      event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1)
+          .maxDamage(9000)).setRegistryName("transtructor_advanced"));
+    }
+  }
 }
