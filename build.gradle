@@ -11,6 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle' 
 import net.minecraftforge.gradle.common.tasks.SignJar
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -19,11 +20,11 @@ version = "${mc_version}-${mod_version}"
 group = 'com.vorquel.similsaxtranstructors' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'similsaxtranstructors'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 // println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings  channel: "${mcp_channel}", version: "${mcp_mappings}"
+ mappings channel: 'official', version: '1.17.1'
  
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
@@ -104,8 +105,8 @@ repositories {
 dependencies {
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-  compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-  runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+ // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+ // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

@@ -1,36 +1,36 @@
 package com.vorquel.similsaxtranstructors.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.vorquel.similsaxtranstructors.ItemSimilsax;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import com.mojang.math.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class BlockOverlay {
 
   private final ResourceLocation overlayLocation = new ResourceLocation(SimilsaxTranstructors.MODID, "textures/overlay.png");
-  private final Vector3d[] vs = new Vector3d[8];
+  private final Vec3[] vs = new Vec3[8];
   {
     for (int i = 0; i < 8; ++i) {
       int x = (i & 1) == 1 ? 1 : 0;
       int y = (i & 2) == 2 ? 1 : 0;
       int z = (i & 4) == 4 ? 1 : 0;
-      vs[i] = new Vector3d(x, y, z);
+      vs[i] = new Vec3(x, y, z);
     }
   }
   int arrow1 = 0;
@@ -80,16 +80,16 @@ public class BlockOverlay {
   }
 
   @SubscribeEvent
-  public void renderOverlay(DrawHighlightEvent.HighlightBlock event) {
+  public void renderOverlay(DrawSelectionEvent.HighlightBlock event) {
     if (shouldSkip(event)) {
       return;
     }
-    BlockRayTraceResult result = event.getTarget();
-    MatrixStack matrixStack = event.getMatrix();
-    IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-    Vector3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
-    BlockPos blockPos = new BlockPos(result.getPos());
-    Vector3d hitVec = result.getHitVec();
+    BlockHitResult result = event.getTarget();
+    PoseStack matrixStack = event.getMatrix();
+    MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+    BlockPos blockPos = new BlockPos(result.getBlockPos());
+    Vec3 hitVec = result.getLocation();
     Direction indexd;
     int[] look = new int[6];
     if (isBadBlock(event)) {
@@ -97,7 +97,7 @@ public class BlockOverlay {
       look = new int[] { cancel, cancel, cancel, cancel, cancel, cancel };
     }
     else {
-      indexd = ItemSimilsax.getSide(result.getFace(), hitVec, blockPos);
+      indexd = ItemSimilsax.getSide(result.getDirection(), hitVec, blockPos);
       if (indexd == null) {
         return;
       }
@@ -125,9 +125,9 @@ public class BlockOverlay {
         break;
       }
     }
-    matrixStack.push();
+    matrixStack.pushPose();
     RenderType renderType = OverlayRenderType.overlayRenderer(overlayLocation);
-    IVertexBuilder builder = renderTypeBuffer.getBuffer(renderType);
+    VertexConsumer builder = renderTypeBuffer.getBuffer(renderType);
     matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
     //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
     double yDiff = hitVec.y - blockPos.getY();
@@ -143,35 +143,35 @@ public class BlockOverlay {
     int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
     //draw east
     matrixStack.translate(P, 0, 0);
-    drawSide(builder, matrixStack.getLast().getMatrix(), X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
+    drawSide(builder, matrixStack.last().pose(), X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
     //draw top
     matrixStack.translate(N, P, 0);
-    drawSide(builder, matrixStack.getLast().getMatrix(), Y, Z, X, uvs[look[TOP]]); // TOP
+    drawSide(builder, matrixStack.last().pose(), Y, Z, X, uvs[look[TOP]]); // TOP
     //SOUTH
     matrixStack.translate(0, N, P);
-    drawSide(builder, matrixStack.getLast().getMatrix(), Z, X, Y, uvs[look[SOUTH]]);
+    drawSide(builder, matrixStack.last().pose(), Z, X, Y, uvs[look[SOUTH]]);
     //WEST
     matrixStack.translate(N, 0, N);
-    drawSide(builder, matrixStack.getLast().getMatrix(), 0, Z, Y, uvs[look[WEST]]);
+    drawSide(builder, matrixStack.last().pose(), 0, Z, Y, uvs[look[WEST]]);
     //BOTTOM
     matrixStack.translate(P, N, 0);
-    drawSide(builder, matrixStack.getLast().getMatrix(), 0, X, Z, uvs[look[BOTTOM]]);
+    drawSide(builder, matrixStack.last().pose(), 0, X, Z, uvs[look[BOTTOM]]);
     //NORTH
     matrixStack.translate(0, P, N);
-    drawSide(builder, matrixStack.getLast().getMatrix(), 0, Y, X, uvs[look[NORTH]]);
-    renderTypeBuffer.finish(renderType);
-    matrixStack.pop();
+    drawSide(builder, matrixStack.last().pose(), 0, Y, X, uvs[look[NORTH]]);
+    renderTypeBuffer.endBatch(renderType);
+    matrixStack.popPose();
   }
 
-  private boolean shouldSkip(DrawHighlightEvent.HighlightBlock event) {
-    if (event.getTarget().getType() != RayTraceResult.Type.BLOCK) {
+  private boolean shouldSkip(DrawSelectionEvent.HighlightBlock event) {
+    if (event.getTarget().getType() != HitResult.Type.BLOCK) {
       return true;
     }
-    PlayerEntity player = Minecraft.getInstance().player;
+    Player player = Minecraft.getInstance().player;
     if (player != null) {
-      ItemStack mainItemStack = player.getHeldItem(Hand.MAIN_HAND);
+      ItemStack mainItemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
       Item mainItem = (mainItemStack.isEmpty()) ? null : mainItemStack.getItem();
-      ItemStack offItemStack = player.getHeldItem(Hand.OFF_HAND);
+      ItemStack offItemStack = player.getItemInHand(InteractionHand.OFF_HAND);
       Item offItem = (offItemStack.isEmpty()) ? null : offItemStack.getItem();
       return !(mainItem instanceof ItemSimilsax || offItem instanceof ItemSimilsax);
     }
@@ -180,7 +180,7 @@ public class BlockOverlay {
     }
   }
 
-  private boolean isBadBlock(DrawHighlightEvent.HighlightBlock event) {
+  private boolean isBadBlock(DrawSelectionEvent.HighlightBlock event) {
     return false;
     //    BlockPos pos = event.getTarget().getBlockPos();
     //    World world = event.getPlayer().world;
@@ -189,16 +189,16 @@ public class BlockOverlay {
     //    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
   }
 
-  private void drawSide(IVertexBuilder buffer, Matrix4f matrix, int c, int i, int j, float[][] uv) {
+  private void drawSide(VertexConsumer buffer, Matrix4f matrix, int c, int i, int j, float[][] uv) {
     addVertex(buffer, matrix, uv[0][0], uv[0][1], c);
     addVertex(buffer, matrix, uv[1][0], uv[1][1], c + i);
     addVertex(buffer, matrix, uv[2][0], uv[2][1], c + i + j);
     addVertex(buffer, matrix, uv[3][0], uv[3][1], c + j);
   }
 
-  private void addVertex(IVertexBuilder buffer, Matrix4f matrix, double u, double v, int i) {
-    buffer.pos(matrix, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
+  private void addVertex(VertexConsumer buffer, Matrix4f matrix, double u, double v, int i) {
+    buffer.vertex(matrix, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
         .color(1.0f, 1.0f, 1.0f, 0.375f)
-        .tex((float) u, (float) v).endVertex();
+        .uv((float) u, (float) v).endVertex();
   }
 }

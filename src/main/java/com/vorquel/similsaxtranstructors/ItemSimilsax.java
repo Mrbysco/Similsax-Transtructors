@@ -1,25 +1,27 @@
 package com.vorquel.similsaxtranstructors;
 
 import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ItemSimilsax extends Item {
 
@@ -30,20 +32,20 @@ public class ItemSimilsax extends Item {
   public final static float HI = 1 - LO;
 
   public ItemSimilsax(Properties properties) {
-    super(properties.group(ItemGroup.TOOLS));
+    super(properties.tab(CreativeModeTab.TAB_TOOLS));
   }
 
   @Override
-  public ActionResultType onItemUse(ItemUseContext context) {
-    PlayerEntity player = context.getPlayer();
-    BlockState block = context.getWorld().getBlockState(context.getPos());
+  public InteractionResult useOn(UseOnContext context) {
+    Player player = context.getPlayer();
+    BlockState block = context.getLevel().getBlockState(context.getClickedPos());
     ItemStack blockStack = new ItemStack(block.getBlock());
-    if (!player.isCreative() && !player.inventory.hasItemStack(blockStack)) {
-      return ActionResultType.PASS;
+    if (!player.isCreative() && !player.getInventory().contains(blockStack)) {
+      return InteractionResult.PASS;
     }
-    Direction side = getSide(context.getFace(), context.getHitVec(), context.getPos());
+    Direction side = getSide(context.getClickedFace(), context.getClickLocation(), context.getClickedPos());
     int initialRange = isAdvanced() ? ConfigHandler.ADVANCEDRANGE.get() : ConfigHandler.BASICRANGE.get();
-    return this.recursiveTower(context.getItem(), player, block.getBlock(), block, context.getWorld(), context.getPos(), side, blockStack, initialRange);
+    return this.recursiveTower(context.getItemInHand(), player, block.getBlock(), block, context.getLevel(), context.getClickedPos(), side, blockStack, initialRange);
   }
 
   private boolean isAdvanced() {
@@ -52,56 +54,56 @@ public class ItemSimilsax extends Item {
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-    tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
+  public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
   }
 
-  private ActionResultType recursiveTower(ItemStack stack, PlayerEntity player, Block block, BlockState state, World world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
+  private InteractionResult recursiveTower(ItemStack stack, Player player, Block block, BlockState state, Level world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
     if (range == 0 || pos == null || side == null || blockStack.isEmpty()) {
-      return ActionResultType.PASS;
+      return InteractionResult.PASS;
     }
-    pos = pos.offset(side);
+    pos = pos.relative(side);
     final BlockState otherState = world.getBlockState(pos);
     final Block otherBlock = otherState.getBlock();
     final boolean canSkip = this.isAdvanced();
     if (canBuildHere(world, pos)) {
-      stack.damageItem(1, player, (p) -> {
+      stack.hurtAndBreak(1, player, (p) -> {
         stack.setCount(0);
       });
       if (!player.isCreative()) {
-        for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
-          ItemStack localStack = player.inventory.getStackInSlot(i);
-          if (!localStack.isEmpty() && localStack.isItemEqual(blockStack)) {
-            player.inventory.decrStackSize(i, 1);
-            if (player.openContainer != null) {
-              player.openContainer.detectAndSendChanges();
+        for (int i = 0; i < player.getInventory().items.size(); ++i) {
+          ItemStack localStack = player.getInventory().getItem(i);
+          if (!localStack.isEmpty() && localStack.sameItem(blockStack)) {
+            player.getInventory().removeItem(i, 1);
+            if (player.containerMenu != null) {
+              player.containerMenu.broadcastChanges();
             }
             break;
           }
         }
       }
-      world.setBlockState(pos, state);
-      world.playSound(player, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, block.getSoundType(state, world, pos, player).getPlaceSound(), SoundCategory.BLOCKS, .5F, .5F);
-      return ActionResultType.SUCCESS;
+      world.setBlockAndUpdate(pos, state);
+      world.playSound(player, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, block.getSoundType(state, world, pos, player).getPlaceSound(), SoundSource.BLOCKS, .5F, .5F);
+      return InteractionResult.SUCCESS;
     }
     else if (canSkip || doBlocksMatch(block, otherBlock)) {
       //if u cant build here, does it match to keep going
       return recursiveTower(stack, player, block, state, world, pos, side, blockStack, range - 1);
     }
     else {
-      return ActionResultType.PASS;
+      return InteractionResult.PASS;
     }
   }
 
-  private boolean canBuildHere(World world, BlockPos pos) {
-    return world.isAirBlock(pos);
+  private boolean canBuildHere(Level world, BlockPos pos) {
+    return world.isEmptyBlock(pos);
   }
 
   private boolean doBlocksMatch(Block block, Block otherBlock) {
     return block == otherBlock;
   }
 
-  public static Direction getSide(Direction sideIn, Vector3d vec, BlockPos pos) {
+  public static Direction getSide(Direction sideIn, Vec3 vec, BlockPos pos) {
     int side = sideIn.ordinal();
     double xIn = vec.x - pos.getX(),
         yIn = vec.y - pos.getY(),

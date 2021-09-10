@@ -1,6 +1,6 @@
 package com.vorquel.similsaxtranstructors;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,7 +16,7 @@ public class SimilsaxRegistry {
 
   @SubscribeEvent
   public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-    event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1).maxDamage(800)).setRegistryName("transtructor_basic"));
-    event.getRegistry().register(new ItemSimilsax(new Item.Properties().maxStackSize(1).maxDamage(9000)).setRegistryName("transtructor_advanced"));
+    event.getRegistry().register(new ItemSimilsax(new Item.Properties().stacksTo(1).durability(800)).setRegistryName("transtructor_basic"));
+    event.getRegistry().register(new ItemSimilsax(new Item.Properties().stacksTo(1).durability(9000)).setRegistryName("transtructor_advanced"));
   }
 }
