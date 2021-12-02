@@ -2,21 +2,21 @@ package com.vorquel.similsaxtranstructors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.vorquel.similsaxtranstructors.ItemSimilsax;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import com.mojang.math.Matrix4f;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -85,9 +85,9 @@ public class BlockOverlay {
       return;
     }
     BlockHitResult result = event.getTarget();
-    PoseStack matrixStack = event.getMatrix();
-    MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
-    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+    PoseStack poseStack = event.getPoseStack();
+    MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+    Vec3 positionMatrix = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
     BlockPos blockPos = new BlockPos(result.getBlockPos());
     Vec3 hitVec = result.getLocation();
     Direction indexd;
@@ -125,42 +125,42 @@ public class BlockOverlay {
         break;
       }
     }
-    matrixStack.pushPose();
+    poseStack.pushPose();
     RenderType renderType = OverlayRenderType.overlayRenderer(overlayLocation);
-    VertexConsumer builder = renderTypeBuffer.getBuffer(renderType);
-    matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+    VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
+    poseStack.translate(-positionMatrix.x, -positionMatrix.y, -positionMatrix.z);
     //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
     double yDiff = hitVec.y - blockPos.getY();
     if (yDiff > ItemSimilsax.HI && yDiff < ItemSimilsax.LO) {
       //edge corner case
       return;
     }
-    matrixStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    poseStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract
     final float P = 1 / 256f, N = -1 / 256f;
     final int X = 1, Y = 2, Z = 4;
     //now draw the box
     int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
     //draw east
-    matrixStack.translate(P, 0, 0);
-    drawSide(builder, matrixStack.last().pose(), X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
+    poseStack.translate(P, 0, 0);
+    drawSide(vertexConsumer, poseStack.last().pose(), X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
     //draw top
-    matrixStack.translate(N, P, 0);
-    drawSide(builder, matrixStack.last().pose(), Y, Z, X, uvs[look[TOP]]); // TOP
+    poseStack.translate(N, P, 0);
+    drawSide(vertexConsumer, poseStack.last().pose(), Y, Z, X, uvs[look[TOP]]); // TOP
     //SOUTH
-    matrixStack.translate(0, N, P);
-    drawSide(builder, matrixStack.last().pose(), Z, X, Y, uvs[look[SOUTH]]);
+    poseStack.translate(0, N, P);
+    drawSide(vertexConsumer, poseStack.last().pose(), Z, X, Y, uvs[look[SOUTH]]);
     //WEST
-    matrixStack.translate(N, 0, N);
-    drawSide(builder, matrixStack.last().pose(), 0, Z, Y, uvs[look[WEST]]);
+    poseStack.translate(N, 0, N);
+    drawSide(vertexConsumer, poseStack.last().pose(), 0, Z, Y, uvs[look[WEST]]);
     //BOTTOM
-    matrixStack.translate(P, N, 0);
-    drawSide(builder, matrixStack.last().pose(), 0, X, Z, uvs[look[BOTTOM]]);
+    poseStack.translate(P, N, 0);
+    drawSide(vertexConsumer, poseStack.last().pose(), 0, X, Z, uvs[look[BOTTOM]]);
     //NORTH
-    matrixStack.translate(0, P, N);
-    drawSide(builder, matrixStack.last().pose(), 0, Y, X, uvs[look[NORTH]]);
-    renderTypeBuffer.endBatch(renderType);
-    matrixStack.popPose();
+    poseStack.translate(0, P, N);
+    drawSide(vertexConsumer, poseStack.last().pose(), 0, Y, X, uvs[look[NORTH]]);
+    bufferSource.endBatch(renderType);
+    poseStack.popPose();
   }
 
   private boolean shouldSkip(DrawSelectionEvent.HighlightBlock event) {
@@ -189,15 +189,15 @@ public class BlockOverlay {
     //    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
   }
 
-  private void drawSide(VertexConsumer buffer, Matrix4f matrix, int c, int i, int j, float[][] uv) {
-    addVertex(buffer, matrix, uv[0][0], uv[0][1], c);
-    addVertex(buffer, matrix, uv[1][0], uv[1][1], c + i);
-    addVertex(buffer, matrix, uv[2][0], uv[2][1], c + i + j);
-    addVertex(buffer, matrix, uv[3][0], uv[3][1], c + j);
+  private void drawSide(VertexConsumer vertexConsumer, Matrix4f matrix, int c, int i, int j, float[][] uv) {
+    addVertex(vertexConsumer, matrix, uv[0][0], uv[0][1], c);
+    addVertex(vertexConsumer, matrix, uv[1][0], uv[1][1], c + i);
+    addVertex(vertexConsumer, matrix, uv[2][0], uv[2][1], c + i + j);
+    addVertex(vertexConsumer, matrix, uv[3][0], uv[3][1], c + j);
   }
 
-  private void addVertex(VertexConsumer buffer, Matrix4f matrix, double u, double v, int i) {
-    buffer.vertex(matrix, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
+  private void addVertex(VertexConsumer vertexConsumer, Matrix4f matrix, double u, double v, int i) {
+    vertexConsumer.vertex(matrix, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
         .color(1.0f, 1.0f, 1.0f, 0.375f)
         .uv((float) u, (float) v).endVertex();
   }
