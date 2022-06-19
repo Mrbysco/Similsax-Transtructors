@@ -1,22 +1,13 @@
 package com.vorquel.similsaxtranstructors;
 
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SimilsaxRegistry {
+  public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SimilsaxTranstructors.MODID);
 
-  @ObjectHolder(SimilsaxTranstructors.MODID + ":transtructor_basic")
-  public static Item basic;
-  @ObjectHolder(SimilsaxTranstructors.MODID + ":transtructor_advanced")
-  public static Item advanced;
-
-  @SubscribeEvent
-  public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-    event.getRegistry().register(new ItemSimilsax(new Item.Properties().stacksTo(1).durability(800)).setRegistryName("transtructor_basic"));
-    event.getRegistry().register(new ItemSimilsax(new Item.Properties().stacksTo(1).durability(9000)).setRegistryName("transtructor_advanced"));
-  }
+  public static final RegistryObject<Item> BASIC = ITEMS.register("transtructor_basic", () -> new ItemSimilsax(new Item.Properties().stacksTo(1).durability(800)));
+  public static final RegistryObject<Item> ADVANCED = ITEMS.register("transtructor_advanced", () -> new ItemSimilsax(new Item.Properties().stacksTo(1).durability(9000)));
 }

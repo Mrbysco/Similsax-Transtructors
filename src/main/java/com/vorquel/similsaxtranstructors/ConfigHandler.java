@@ -2,8 +2,9 @@ package com.vorquel.similsaxtranstructors;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import java.nio.file.Path;
 import net.minecraftforge.common.ForgeConfigSpec;
+
+import java.nio.file.Path;
 
 class ConfigHandler {
 
