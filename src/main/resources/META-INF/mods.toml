@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[44,)"
 issueTrackerURL="https://github.com/Lothrazar/Similsax-Transtructors/issues"
 license="zlib"
 
@@ -14,15 +14,8 @@ description='''
 Simple classic building tools for long range structures
 '''
 [[dependencies.similsaxtranstructors]]
-modId="forge"
-mandatory=true
-versionRange="[41.0.94,)"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.similsaxtranstructors]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19,]"
+versionRange="[1.19.3,]"
 ordering="NONE"
 side="BOTH"

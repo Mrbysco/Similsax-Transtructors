@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,7 +29,7 @@ public class ItemSimilsax extends Item {
   public final static float HI = 1 - LO;
 
   public ItemSimilsax(Properties properties) {
-    super(properties.tab(CreativeModeTab.TAB_TOOLS));
+    super(properties);
   }
 
   @Override
