@@ -31,7 +31,8 @@ public class SimilsaxTranstructors {
 
   private void addTabContents(final CreativeModeTabEvent.BuildContents event) {
     if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-      event.registerSimple(event.getTab(), SimilsaxRegistry.BASIC.get(), SimilsaxRegistry.ADVANCED.get());
+      event.accept(SimilsaxRegistry.BASIC.get());
+      event.accept(SimilsaxRegistry.ADVANCED.get());
     }
   }
 }
