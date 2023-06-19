@@ -70,7 +70,7 @@ public class ItemSimilsax extends Item {
       if (!player.isCreative()) {
         for (int i = 0; i < player.getInventory().items.size(); ++i) {
           ItemStack localStack = player.getInventory().getItem(i);
-          if (!localStack.isEmpty() && localStack.sameItem(blockStack)) {
+          if (!localStack.isEmpty() && ItemStack.isSameItem(localStack, blockStack)) {
             player.getInventory().removeItem(i, 1);
             if (player.containerMenu != null) {
               player.containerMenu.broadcastChanges();

@@ -16,7 +16,7 @@ public class OverlayRenderType extends RenderType {
     RenderType.CompositeState state = RenderType.CompositeState.builder()
         .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
         .setCullState(RenderStateShard.NO_CULL)
-        .setShaderState(BLOCK_SHADER)
+        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
         .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
         .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
         .createCompositeState(true);

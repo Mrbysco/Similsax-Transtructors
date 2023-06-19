@@ -4,7 +4,7 @@ import com.vorquel.similsaxtranstructors.client.BlockOverlay;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -29,8 +29,8 @@ public class SimilsaxTranstructors {
     });
   }
 
-  private void addTabContents(final CreativeModeTabEvent.BuildContents event) {
-    if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+  private void addTabContents(final BuildCreativeModeTabContentsEvent event) {
+    if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
       event.accept(SimilsaxRegistry.BASIC.get());
       event.accept(SimilsaxRegistry.ADVANCED.get());
     }
