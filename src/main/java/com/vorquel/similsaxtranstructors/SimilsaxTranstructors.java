@@ -9,7 +9,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(SimilsaxTranstructors.MODID)
 public class SimilsaxTranstructors {
@@ -19,11 +18,9 @@ public class SimilsaxTranstructors {
 
   public SimilsaxTranstructors() {
     IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-    ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
+    new ConfigHandlerST();
     SimilsaxRegistry.ITEMS.register(eventBus);
-
     eventBus.addListener(this::addTabContents);
-
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
       MinecraftForge.EVENT_BUS.register(new BlockOverlay());
     });

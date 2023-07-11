@@ -1,26 +1,19 @@
 package com.vorquel.similsaxtranstructors;
 
-import net.minecraft.ChatFormatting;
+import com.lothrazar.library.item.ItemFlib;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.List;
-
-public class ItemSimilsax extends Item {
+public class ItemSimilsax extends ItemFlib {
 
   private static final int[] sidesXY = new int[] { 4, 5, 0, 1 };
   private static final int[] sidesYZ = new int[] { 0, 1, 2, 3 };
@@ -41,18 +34,12 @@ public class ItemSimilsax extends Item {
       return InteractionResult.PASS;
     }
     Direction side = getSide(context.getClickedFace(), context.getClickLocation(), context.getClickedPos());
-    int initialRange = isAdvanced() ? ConfigHandler.ADVANCEDRANGE.get() : ConfigHandler.BASICRANGE.get();
+    int initialRange = isAdvanced() ? ConfigHandlerST.ADVANCEDRANGE.get() : ConfigHandlerST.BASICRANGE.get();
     return this.recursiveTower(context.getItemInHand(), player, block.getBlock(), block, context.getLevel(), context.getClickedPos(), side, blockStack, initialRange);
   }
 
   private boolean isAdvanced() {
     return this == SimilsaxRegistry.ADVANCED.get();
-  }
-
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-    tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
   }
 
   private InteractionResult recursiveTower(ItemStack stack, Player player, Block block, BlockState state, Level world, BlockPos pos, Direction side, final ItemStack blockStack, int range) {

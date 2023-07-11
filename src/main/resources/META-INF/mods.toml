@@ -25,3 +25,9 @@ mandatory=true
 versionRange="[46.0.1,)"
 ordering="NONE"
 side="BOTH"
+[[dependencies.similsaxtranstructors]]
+    modId="flib"
+    mandatory=true
+    versionRange="[0.0.5,)"
+    ordering="NONE"
+    side="BOTH"
