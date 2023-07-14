@@ -1,6 +1,10 @@
 package com.vorquel.similsaxtranstructors;
 
-import com.vorquel.similsaxtranstructors.client.BlockOverlay;
+import com.lothrazar.library.render.RenderBlockOverlay;
+import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
+import com.vorquel.similsaxtranstructors.registry.ConfigHandlerST;
+import com.vorquel.similsaxtranstructors.registry.SimilsaxRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,7 +18,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class SimilsaxTranstructors {
 
   public static final String MODID = "similsaxtranstructors";
-  //  static Logger log = LogManager.getLogger(MODID);
 
   public SimilsaxTranstructors() {
     IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -22,7 +25,7 @@ public class SimilsaxTranstructors {
     SimilsaxRegistry.ITEMS.register(eventBus);
     eventBus.addListener(this::addTabContents);
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-      MinecraftForge.EVENT_BUS.register(new BlockOverlay());
+      MinecraftForge.EVENT_BUS.register(new RenderBlockOverlay(MODID + ":overlay_renderer", new ResourceLocation(MODID, "textures/overlay.png"), ItemSimilsax.class));
     });
   }
 

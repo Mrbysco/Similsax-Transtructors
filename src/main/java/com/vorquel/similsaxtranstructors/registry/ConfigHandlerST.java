@@ -1,6 +1,7 @@
-package com.vorquel.similsaxtranstructors;
+package com.vorquel.similsaxtranstructors.registry;
 
 import com.lothrazar.library.config.ConfigTemplate;
+import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandlerST extends ConfigTemplate {

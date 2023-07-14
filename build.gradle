@@ -19,7 +19,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 // println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
- mappings channel: 'official', version: '1.20.1'
+ mappings channel: 'official', version: mc_version
  
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
@@ -85,6 +85,8 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+
+  flatDir { dir 'libs' } 
     maven {
         // location of the maven that hosts JEI files before January 2023
         name = "Progwml6 maven"
@@ -99,7 +101,9 @@ repositories {
 }
 
 dependencies {
- implementation fg.deobf("curse.maven:flib-661261:4583429")
+
+implementation fg.deobf("blank:flib-1.20.1:0.0.7-SNAPSHOT")
+ //  implementation fg.deobf("curse.maven:flib-661261:4583429")
 
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
