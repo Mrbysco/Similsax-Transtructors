@@ -7,7 +7,7 @@ license="zlib"
 modId="similsaxtranstructors"
 version="${file.jarVersion}"
 displayName="Similsax Transtructors - Builder's Wands"
-updateJSONURL="https://raw.githubusercontent.com/Lothrazar/Similsax-Transtructors/master/update.json"
+updateJSONURL="https://raw.githubusercontent.com/Lothrazar/Similsax-Transtructors/trunk/1.20/update.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/similsax-transtructors"
 authors="Lothrazar, Vorquel"
 description='''
@@ -16,18 +16,18 @@ Simple classic building tools for long range structures
 [[dependencies.similsaxtranstructors]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20,]"
+versionRange="[1.20.1,]"
 ordering="NONE"
 side="BOTH"
 [[dependencies.similsaxtranstructors]]
 modId="forge"
 mandatory=true
-versionRange="[46.0.1,)"
+versionRange="[47,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.similsaxtranstructors]]
     modId="flib"
     mandatory=true
-    versionRange="[0.0.5,)"
+    versionRange="[0.0.7,)"
     ordering="NONE"
     side="BOTH"

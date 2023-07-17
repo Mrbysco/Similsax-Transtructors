@@ -102,8 +102,8 @@ repositories {
 
 dependencies {
 
- implementation fg.deobf("blank:flib-1.20.1:${flib_version}")
- //  implementation fg.deobf("curse.maven:flib-661261:4583429")
+// implementation fg.deobf("blank:flib-1.20.1:${flib_version}")
+    implementation fg.deobf("curse.maven:flib-661261:${flib_file}")
 
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
