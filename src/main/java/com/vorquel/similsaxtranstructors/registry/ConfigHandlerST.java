@@ -1,16 +1,15 @@
 package com.vorquel.similsaxtranstructors.registry;
 
-import com.lothrazar.library.config.ConfigTemplate;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class ConfigHandlerST extends ConfigTemplate {
+public class ConfigHandlerST {
 
-  public static ForgeConfigSpec CONFIG;
-  public static ForgeConfigSpec.IntValue BASICRANGE;
-  public static ForgeConfigSpec.IntValue ADVANCEDRANGE;
+  public static ModConfigSpec CONFIG;
+  public static ModConfigSpec.IntValue BASICRANGE;
+  public static ModConfigSpec.IntValue ADVANCEDRANGE;
   static {
-    final ForgeConfigSpec.Builder BUILDER = builder();
+    final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     BUILDER.comment("General settings").push(SimilsaxTranstructors.MODID);
     BUILDER.push("range").comment("How far away from you this tool can build");
     BASICRANGE = BUILDER.comment("How far you can build using the basic transtructor").defineInRange("basic", 32, 2, 128);
@@ -18,9 +17,5 @@ public class ConfigHandlerST extends ConfigTemplate {
     BUILDER.pop();
     BUILDER.pop();
     CONFIG = BUILDER.build();
-  }
-
-  public ConfigHandlerST() {
-    CONFIG.setConfig(setup(SimilsaxTranstructors.MODID));
   }
 }

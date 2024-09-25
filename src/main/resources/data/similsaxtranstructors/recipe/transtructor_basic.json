@@ -1,6 +1,7 @@
 {
 
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "pattern": [
     "x x",
     "xox",
@@ -19,6 +20,7 @@
     
   },
   "result": {
-    "item": "similsaxtranstructors:transtructor_basic"
+    "count": 1,
+    "id": "similsaxtranstructors:transtructor_basic"
   }
 }
