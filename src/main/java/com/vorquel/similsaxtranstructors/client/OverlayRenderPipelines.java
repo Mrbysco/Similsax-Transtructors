@@ -11,7 +11,7 @@ import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
 public class OverlayRenderPipelines {
 
-  public static final RenderPipeline OVERLAY = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+  public static final RenderPipeline OVERLAY = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
       .withLocation(ResourceLocation.fromNamespaceAndPath(SimilsaxTranstructors.MODID, "pipeline/overlay"))
       .withVertexShader("core/position_tex_color")
       .withFragmentShader("core/position_tex_color")
