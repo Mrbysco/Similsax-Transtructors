@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "/": {
-      "tag": "c:rods/wooden"
-    },
-    "o": {
-      "tag": "c:dyes/cyan"
-    },
-    "x": {
-      "tag": "c:ingots/iron"
-    }
+    "/": "#c:rods/wooden",
+    "o": "#c:dyes/cyan",
+    "x": "#c:ingots/iron"
   },
   "pattern": [
     "x x",

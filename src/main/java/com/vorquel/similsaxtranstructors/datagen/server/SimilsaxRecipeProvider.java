@@ -6,19 +6,18 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
 
 public class SimilsaxRecipeProvider extends RecipeProvider {
-  public SimilsaxRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-    super(packOutput, lookupProvider);
+  public SimilsaxRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+    super(provider, recipeOutput);
   }
 
   @Override
-  protected void buildRecipes(RecipeOutput output, HolderLookup.Provider provider) {
-    ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, SimilsaxRegistry.ADVANCED)
+  protected void buildRecipes() {
+    shaped(RecipeCategory.TOOLS, SimilsaxRegistry.ADVANCED)
         .pattern("x x")
         .pattern("xox")
         .pattern(" / ")
@@ -30,7 +29,7 @@ public class SimilsaxRecipeProvider extends RecipeProvider {
         .unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND))
         .save(output);
 
-    ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, SimilsaxRegistry.BASIC)
+    shaped(RecipeCategory.TOOLS, SimilsaxRegistry.BASIC)
         .pattern("x x")
         .pattern("xox")
         .pattern(" / ")
@@ -41,5 +40,21 @@ public class SimilsaxRecipeProvider extends RecipeProvider {
         .unlockedBy("has_cyan_dye", has(Tags.Items.DYES_CYAN))
         .unlockedBy("has_wooden_rod", has(Tags.Items.RODS_WOODEN))
         .save(output);
+  }
+
+  public static class Runner extends RecipeProvider.Runner {
+    public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+      super(output, completableFuture);
+    }
+
+    @Override
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+      return new SimilsaxRecipeProvider(provider, recipeOutput);
+    }
+
+    @Override
+    public String getName() {
+      return "Similsax Recipes";
+    }
   }
 }

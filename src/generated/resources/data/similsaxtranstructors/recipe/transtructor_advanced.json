@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "/": {
-      "tag": "c:gems/diamond"
-    },
-    "o": {
-      "tag": "c:ender_pearls"
-    },
-    "x": {
-      "tag": "c:ingots/iron"
-    }
+    "/": "#c:gems/diamond",
+    "o": "#c:ender_pearls",
+    "x": "#c:ingots/iron"
   },
   "pattern": [
     "x x",

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.TriState;
 
 public class OverlayRenderType extends RenderType {
 
@@ -14,7 +15,7 @@ public class OverlayRenderType extends RenderType {
 
   public static RenderType overlayRenderer(ResourceLocation resourceLocation) {
     RenderType.CompositeState state = RenderType.CompositeState.builder()
-        .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+        .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.FALSE, false))
         .setCullState(RenderStateShard.NO_CULL)
         .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
         .setTransparencyState(TRANSLUCENT_TRANSPARENCY)

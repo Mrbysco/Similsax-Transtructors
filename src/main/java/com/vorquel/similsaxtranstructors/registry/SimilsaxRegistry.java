@@ -9,6 +9,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class SimilsaxRegistry {
 
   public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SimilsaxTranstructors.MODID);
-  public static final DeferredItem<ItemSimilsax> BASIC = ITEMS.register("transtructor_basic", () -> new ItemSimilsax(new Item.Properties().durability(800)));
-  public static final DeferredItem<ItemSimilsax> ADVANCED = ITEMS.register("transtructor_advanced", () -> new ItemSimilsax(new Item.Properties().durability(9000)));
+  public static final DeferredItem<ItemSimilsax> BASIC = ITEMS.registerItem("transtructor_basic", ItemSimilsax::new, new Item.Properties().durability(800));
+  public static final DeferredItem<ItemSimilsax> ADVANCED = ITEMS.registerItem("transtructor_advanced", ItemSimilsax::new, new Item.Properties().durability(9000));
 }
