@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "/": {
+      "tag": "c:gems/diamond"
+    },
+    "o": {
+      "tag": "c:ender_pearls"
+    },
+    "x": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "x x",
+    "xox",
+    " / "
+  ],
+  "result": {
+    "count": 1,
+    "id": "similsaxtranstructors:transtructor_advanced"
+  }
+}
