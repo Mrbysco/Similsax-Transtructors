@@ -38,7 +38,7 @@ public class ItemSimilsax extends Item {
     Player player = context.getPlayer();
     BlockState block = context.getLevel().getBlockState(context.getClickedPos());
     ItemStack blockStack = new ItemStack(block.getBlock());
-    if (!player.isCreative() && !player.getInventory().contains(blockStack)) {
+    if (player != null && !player.isCreative() && !player.getInventory().contains(blockStack)) {
       return InteractionResult.PASS;
     }
     Direction side = getSide(context.getClickedFace(), context.getClickLocation(), context.getClickedPos());
