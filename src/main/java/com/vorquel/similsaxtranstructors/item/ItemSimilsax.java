@@ -13,13 +13,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemSimilsax extends Item {
 
@@ -51,8 +52,8 @@ public class ItemSimilsax extends Item {
   }
 
   @Override
-  public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-    tooltipComponents.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+  public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+    tooltipAdder.accept(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
   }
 
   private InteractionResult recursiveTower(ItemStack stack, Player player, Block block, BlockState state, Level level, BlockPos pos, Direction side, final ItemStack blockStack, int range) {
@@ -68,7 +69,7 @@ public class ItemSimilsax extends Item {
         stack.setCount(0);
       });
       if (!player.isCreative()) {
-        for (int i = 0; i < player.getInventory().items.size(); ++i) {
+        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); ++i) {
           ItemStack localStack = player.getInventory().getItem(i);
           if (!localStack.isEmpty() && ItemStack.isSameItem(localStack, blockStack)) {
             player.getInventory().removeItem(i, 1);

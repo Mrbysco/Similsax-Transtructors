@@ -2,15 +2,14 @@ package com.vorquel.similsaxtranstructors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
+import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -89,8 +88,10 @@ public class BlockOverlay {
     }
     BlockHitResult result = event.getTarget();
     PoseStack poseStack = event.getPoseStack();
-    MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+
+    Minecraft mc = Minecraft.getInstance();
+    MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+    Vec3 projectedView = event.getCamera().getPosition();
     BlockPos blockPos = new BlockPos(result.getBlockPos());
     Vec3 hitVec = result.getLocation();
     Direction indexd;
@@ -144,23 +145,24 @@ public class BlockOverlay {
     //now draw the box
     int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
     //draw east
+    Matrix4f pose = poseStack.last().pose();
     poseStack.translate(P, 0, 0);
-    drawSide(vertexConsumer, poseStack.last().pose(), X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
+    drawSide(vertexConsumer, pose, X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
     //draw top
     poseStack.translate(N, P, 0);
-    drawSide(vertexConsumer, poseStack.last().pose(), Y, Z, X, uvs[look[TOP]]); // TOP
+    drawSide(vertexConsumer, pose, Y, Z, X, uvs[look[TOP]]); // TOP
     //SOUTH
     poseStack.translate(0, N, P);
-    drawSide(vertexConsumer, poseStack.last().pose(), Z, X, Y, uvs[look[SOUTH]]);
+    drawSide(vertexConsumer, pose, Z, X, Y, uvs[look[SOUTH]]);
     //WEST
     poseStack.translate(N, 0, N);
-    drawSide(vertexConsumer, poseStack.last().pose(), 0, Z, Y, uvs[look[WEST]]);
+    drawSide(vertexConsumer, pose, 0, Z, Y, uvs[look[WEST]]);
     //BOTTOM
     poseStack.translate(P, N, 0);
-    drawSide(vertexConsumer, poseStack.last().pose(), 0, X, Z, uvs[look[BOTTOM]]);
+    drawSide(vertexConsumer, pose, 0, X, Z, uvs[look[BOTTOM]]);
     //NORTH
     poseStack.translate(0, P, N);
-    drawSide(vertexConsumer, poseStack.last().pose(), 0, Y, X, uvs[look[NORTH]]);
+    drawSide(vertexConsumer, pose, 0, Y, X, uvs[look[NORTH]]);
     bufferSource.endBatch(renderType);
     poseStack.popPose();
   }
@@ -171,9 +173,9 @@ public class BlockOverlay {
     }
     Player player = Minecraft.getInstance().player;
     if (player != null) {
-      ItemStack mainItemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+      ItemStack mainItemStack = player.getMainHandItem();
       Item mainItem = (mainItemStack.isEmpty()) ? null : mainItemStack.getItem();
-      ItemStack offItemStack = player.getItemInHand(InteractionHand.OFF_HAND);
+      ItemStack offItemStack = player.getOffhandItem();
       Item offItem = (offItemStack.isEmpty()) ? null : offItemStack.getItem();
       return !(mainItem instanceof ItemSimilsax || offItem instanceof ItemSimilsax);
     } else {
@@ -190,15 +192,15 @@ public class BlockOverlay {
     //    return block.hasTileEntity(state) || block.isReplaceable(world, pos);
   }
 
-  private void drawSide(VertexConsumer buffer, Matrix4f matrix, int c, int i, int j, float[][] uv) {
-    addVertex(buffer, matrix, uv[0][0], uv[0][1], c);
-    addVertex(buffer, matrix, uv[1][0], uv[1][1], c + i);
-    addVertex(buffer, matrix, uv[2][0], uv[2][1], c + i + j);
-    addVertex(buffer, matrix, uv[3][0], uv[3][1], c + j);
+  private void drawSide(VertexConsumer buffer, Matrix4f pose, int c, int i, int j, float[][] uv) {
+    addVertex(buffer, pose, uv[0][0], uv[0][1], c);
+    addVertex(buffer, pose, uv[1][0], uv[1][1], c + i);
+    addVertex(buffer, pose, uv[2][0], uv[2][1], c + i + j);
+    addVertex(buffer, pose, uv[3][0], uv[3][1], c + j);
   }
 
-  private void addVertex(VertexConsumer buffer, Matrix4f matrix, double u, double v, int i) {
-    buffer.addVertex(matrix, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
+  private void addVertex(VertexConsumer buffer, Matrix4f pose, double u, double v, int i) {
+    buffer.addVertex(pose, (float) vs[i].x, (float) vs[i].y, (float) vs[i].z)
         .setColor(1.0f, 1.0f, 1.0f, 0.375f)
         .setUv((float) u, (float) v).setLight(0);
   }

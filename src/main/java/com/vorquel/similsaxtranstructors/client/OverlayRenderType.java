@@ -1,26 +1,31 @@
 package com.vorquel.similsaxtranstructors.client;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.TriState;
 
-public class OverlayRenderType extends RenderType {
+import java.util.function.Function;
 
-  public OverlayRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-    super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+public abstract class OverlayRenderType extends RenderType {
+
+  public OverlayRenderType(String name, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
+    super(name, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
   }
 
-  public static RenderType overlayRenderer(ResourceLocation resourceLocation) {
-    RenderType.CompositeState state = RenderType.CompositeState.builder()
-        .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.FALSE, false))
-        .setCullState(RenderStateShard.NO_CULL)
-        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-        .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
-        .createCompositeState(true);
-    return create("similsaxtranstructors:overlay_renderer", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, false, state);
+  public static final Function<ResourceLocation, RenderType> OVERLAY_RENDERER = Util.memoize(
+      texture -> {
+        RenderType.CompositeState state = RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(texture, TriState.FALSE, false))
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+            .createCompositeState(true);
+        return create("similsaxtranstructors:overlay_renderer", 256, true, false, OverlayRenderPipelines.OVERLAY, state);
+      }
+  );
+
+  public static RenderType overlayRenderer(ResourceLocation texture) {
+    return OVERLAY_RENDERER.apply(texture);
   }
 }

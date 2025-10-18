@@ -1,6 +1,7 @@
 package com.vorquel.similsaxtranstructors;
 
 import com.vorquel.similsaxtranstructors.client.BlockOverlay;
+import com.vorquel.similsaxtranstructors.client.OverlayRenderPipelines;
 import com.vorquel.similsaxtranstructors.registry.ConfigHandlerST;
 import com.vorquel.similsaxtranstructors.registry.SimilsaxRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -26,6 +27,7 @@ public class SimilsaxTranstructors {
 
     if (dist.isClient()) {
       NeoForge.EVENT_BUS.register(new BlockOverlay());
+      eventBus.addListener(OverlayRenderPipelines::registerRenderPipeline);
     }
   }
 
