@@ -1,6 +1,8 @@
 package com.vorquel.similsaxtranstructors.client;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -13,12 +15,17 @@ public abstract class OverlayRenderType extends RenderType {
     super(name, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
   }
 
+  public static final RenderStateShard.OutputStateShard TRANSLUCENT_TARGET = new RenderStateShard.OutputStateShard("translucent_target", () -> {
+    RenderTarget rendertarget = Minecraft.getInstance().levelRenderer.getTranslucentTarget();
+    return rendertarget != null ? rendertarget : Minecraft.getInstance().getMainRenderTarget();
+  });
+
   public static final Function<ResourceLocation, RenderType> OVERLAY_RENDERER = Util.memoize(
       texture -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(texture, false))
             .setLightmapState(RenderStateShard.LIGHTMAP)
-            .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+            .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true);
         return create("similsaxtranstructors:overlay_renderer", 256, true, false, OverlayRenderPipelines.OVERLAY, state);
       }

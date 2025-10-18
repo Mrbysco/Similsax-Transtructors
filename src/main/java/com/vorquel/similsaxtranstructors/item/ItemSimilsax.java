@@ -64,7 +64,7 @@ public class ItemSimilsax extends Item {
     final BlockState otherState = level.getBlockState(pos);
     final Block otherBlock = otherState.getBlock();
     final boolean canSkip = this.isAdvanced();
-    if (canBuildHere(level, pos) && !level.isClientSide) {
+    if (canBuildHere(level, pos) && !level.isClientSide()) {
       stack.hurtAndBreak(1, (ServerLevel) level, player, (p) -> {
         stack.setCount(0);
       });

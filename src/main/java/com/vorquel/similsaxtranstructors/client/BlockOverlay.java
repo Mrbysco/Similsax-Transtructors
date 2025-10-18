@@ -1,11 +1,9 @@
 package com.vorquel.similsaxtranstructors.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
 import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import org.joml.Matrix4f;
 
 public class BlockOverlay {
@@ -82,93 +80,92 @@ public class BlockOverlay {
   }
 
   @SubscribeEvent
-  public void renderOverlay(RenderHighlightEvent.Block event) {
-    if (shouldSkip(event)) {
+  public void renderOverlay(ExtractBlockOutlineRenderStateEvent event) {
+    final BlockHitResult result = event.getHitResult();
+    final Vec3 projectedView = event.getCamera().getPosition();
+    if (shouldSkip(result)) {
       return;
     }
-    BlockHitResult result = event.getTarget();
-    PoseStack poseStack = event.getPoseStack();
-
-    Minecraft mc = Minecraft.getInstance();
-    MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-    Vec3 projectedView = event.getCamera().getPosition();
-    BlockPos blockPos = new BlockPos(result.getBlockPos());
-    Vec3 hitVec = result.getLocation();
-    Direction indexd;
-    int[] look = new int[6];
-    if (isBadBlock(event)) {
-      indexd = Direction.UP;
-      look = new int[]{cancel, cancel, cancel, cancel, cancel, cancel};
-    } else {
-      indexd = ItemSimilsax.getSide(result.getDirection(), hitVec, blockPos);
-      if (indexd == null) {
-        return;
+    event.addCustomRenderer((state, bufferSource, poseStack, translucentPass, levelRenderState) -> {
+      BlockPos blockPos = new BlockPos(result.getBlockPos());
+      Vec3 hitVec = result.getLocation();
+      Direction indexd;
+      int[] look = new int[6];
+      if (isBadBlock(event)) {
+        indexd = Direction.UP;
+        look = new int[]{cancel, cancel, cancel, cancel, cancel, cancel};
+      } else {
+        indexd = ItemSimilsax.getSide(result.getDirection(), hitVec, blockPos);
+        if (indexd == null) {
+          return false;
+        }
+        indexd = indexd.getOpposite();
+        switch (indexd) {
+          case DOWN:
+            look = new int[]{arrow3, bullseye, arrow2, arrow2, cross, arrow3};
+            break;
+          case UP:
+            look = new int[]{arrow1, cross, arrow4, arrow4, bullseye, arrow1};
+            break;
+          case NORTH:
+            look = new int[]{arrow2, arrow3, bullseye, arrow3, arrow2, cross};
+            break;
+          case SOUTH:
+            look = new int[]{arrow4, arrow1, cross, arrow1, arrow4, bullseye};
+            break;
+          case WEST:
+            look = new int[]{bullseye, arrow2, arrow3, cross, arrow3, arrow2};
+            break;
+          case EAST:
+            look = new int[]{cross, arrow4, arrow1, bullseye, arrow1, arrow4};
+            break;
+          default:
+            break;
+        }
       }
-      indexd = indexd.getOpposite();
-      switch (indexd) {
-        case DOWN:
-          look = new int[]{arrow3, bullseye, arrow2, arrow2, cross, arrow3};
-          break;
-        case UP:
-          look = new int[]{arrow1, cross, arrow4, arrow4, bullseye, arrow1};
-          break;
-        case NORTH:
-          look = new int[]{arrow2, arrow3, bullseye, arrow3, arrow2, cross};
-          break;
-        case SOUTH:
-          look = new int[]{arrow4, arrow1, cross, arrow1, arrow4, bullseye};
-          break;
-        case WEST:
-          look = new int[]{bullseye, arrow2, arrow3, cross, arrow3, arrow2};
-          break;
-        case EAST:
-          look = new int[]{cross, arrow4, arrow1, bullseye, arrow1, arrow4};
-          break;
-        default:
-          break;
+      poseStack.pushPose();
+      RenderType renderType = OverlayRenderType.overlayRenderer(overlayLocation);
+      VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
+      poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+      //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
+      double yDiff = hitVec.y - blockPos.getY();
+      if (yDiff > ItemSimilsax.HI && yDiff < ItemSimilsax.LO) {
+        //edge corner case
+        return false;
       }
-    }
-    poseStack.pushPose();
-    RenderType renderType = OverlayRenderType.overlayRenderer(overlayLocation);
-    VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
-    poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-    //      SimilsaxTranstructors.log.info("{} ::  mPos {} ({}  {}  {}) ", mPos, indexd, v.x, v.y, v.z);
-    double yDiff = hitVec.y - blockPos.getY();
-    if (yDiff > ItemSimilsax.HI && yDiff < ItemSimilsax.LO) {
-      //edge corner case
-      return;
-    }
-    poseStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract
-    final float P = 1 / 256f, N = -1 / 256f;
-    final int X = 1, Y = 2, Z = 4;
-    //now draw the box
-    int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
-    //draw east
-    Matrix4f pose = poseStack.last().pose();
-    poseStack.translate(P, 0, 0);
-    drawSide(vertexConsumer, pose, X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
-    //draw top
-    poseStack.translate(N, P, 0);
-    drawSide(vertexConsumer, pose, Y, Z, X, uvs[look[TOP]]); // TOP
-    //SOUTH
-    poseStack.translate(0, N, P);
-    drawSide(vertexConsumer, pose, Z, X, Y, uvs[look[SOUTH]]);
-    //WEST
-    poseStack.translate(N, 0, N);
-    drawSide(vertexConsumer, pose, 0, Z, Y, uvs[look[WEST]]);
-    //BOTTOM
-    poseStack.translate(P, N, 0);
-    drawSide(vertexConsumer, pose, 0, X, Z, uvs[look[BOTTOM]]);
-    //NORTH
-    poseStack.translate(0, P, N);
-    drawSide(vertexConsumer, pose, 0, Y, X, uvs[look[NORTH]]);
-    bufferSource.endBatch(renderType);
-    poseStack.popPose();
+      poseStack.translate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+      //P/N ONLY exist to prevent layer fighting/flashing, push it just outside ontop of the block, so 1 + this fract
+      final float P = 1 / 256f, N = -1 / 256f;
+      final int X = 1, Y = 2, Z = 4;
+      //now draw the box
+      int TOP = 1, EAST = 0, SOUTH = 2, WEST = 3, BOTTOM = 4, NORTH = 5;
+      //draw east
+      Matrix4f pose = poseStack.last().pose();
+      poseStack.translate(P, 0, 0);
+      drawSide(vertexConsumer, pose, X, Y, Z, uvs[look[EAST]]);// this one has to be est or west side
+      //draw top
+      poseStack.translate(N, P, 0);
+      drawSide(vertexConsumer, pose, Y, Z, X, uvs[look[TOP]]); // TOP
+      //SOUTH
+      poseStack.translate(0, N, P);
+      drawSide(vertexConsumer, pose, Z, X, Y, uvs[look[SOUTH]]);
+      //WEST
+      poseStack.translate(N, 0, N);
+      drawSide(vertexConsumer, pose, 0, Z, Y, uvs[look[WEST]]);
+      //BOTTOM
+      poseStack.translate(P, N, 0);
+      drawSide(vertexConsumer, pose, 0, X, Z, uvs[look[BOTTOM]]);
+      //NORTH
+      poseStack.translate(0, P, N);
+      drawSide(vertexConsumer, pose, 0, Y, X, uvs[look[NORTH]]);
+      bufferSource.endBatch(renderType);
+      poseStack.popPose();
+      return true;
+    });
   }
 
-  private boolean shouldSkip(RenderHighlightEvent.Block event) {
-    if (event.getTarget().getType() != HitResult.Type.BLOCK) {
+  private boolean shouldSkip(BlockHitResult hitResult) {
+    if (hitResult.getType() != HitResult.Type.BLOCK) {
       return true;
     }
     Player player = Minecraft.getInstance().player;
@@ -183,7 +180,7 @@ public class BlockOverlay {
     }
   }
 
-  private boolean isBadBlock(RenderHighlightEvent.Block event) {
+  private boolean isBadBlock(ExtractBlockOutlineRenderStateEvent event) {
     return false;
     //    BlockPos pos = event.getTarget().getBlockPos();
     //    World world = event.getPlayer().world;
