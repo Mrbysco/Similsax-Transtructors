@@ -1,7 +1,7 @@
 package com.vorquel.similsaxtranstructors.registry;
 
-import com.vorquel.similsaxtranstructors.ItemSimilsax;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
+import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;

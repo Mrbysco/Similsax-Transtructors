@@ -1,4 +1,4 @@
-package com.vorquel.similsaxtranstructors;
+package com.vorquel.similsaxtranstructors.item;
 
 import com.vorquel.similsaxtranstructors.registry.ConfigHandlerST;
 import com.vorquel.similsaxtranstructors.registry.SimilsaxRegistry;
