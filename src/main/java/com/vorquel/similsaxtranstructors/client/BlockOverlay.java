@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.vorquel.similsaxtranstructors.SimilsaxTranstructors;
 import com.vorquel.similsaxtranstructors.item.ItemSimilsax;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,7 @@ import org.joml.Matrix4f;
 
 public class BlockOverlay {
 
-  private final ResourceLocation overlayLocation = ResourceLocation.fromNamespaceAndPath(SimilsaxTranstructors.MODID, "textures/overlay.png");
+  private final Identifier overlayLocation = Identifier.fromNamespaceAndPath(SimilsaxTranstructors.MODID, "textures/overlay.png");
   private final Vec3[] vs = new Vec3[8];
 
   {
@@ -82,7 +82,7 @@ public class BlockOverlay {
   @SubscribeEvent
   public void renderOverlay(ExtractBlockOutlineRenderStateEvent event) {
     final BlockHitResult result = event.getHitResult();
-    final Vec3 projectedView = event.getCamera().getPosition();
+    final Vec3 projectedView = event.getCamera().position();
     if (shouldSkip(result)) {
       return;
     }
